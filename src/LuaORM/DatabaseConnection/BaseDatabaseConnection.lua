@@ -6,7 +6,6 @@
 --
 
 local ObjectUtils = require("src/LuaORM/Util/ObjectUtils")
-local SettingValue = require("src/LuaORM/Util/SettingValueList/SettingValue")
 local SettingValueList = require("src/LuaORM/Util/SettingValueList/SettingValueList")
 local API = LuaORM_API
 
@@ -34,19 +33,19 @@ BaseDatabaseConnection.databaseLanguage = nil
 BaseDatabaseConnection.settings = SettingValueList(
 
   -- The path to the database file (SQLite) or the name of the database
-  SettingValue("databaseName", "string"),
+  { name = "databaseName", dataType = "string" },
 
   -- The address (IP, URL, hostname) of the database server
-  SettingValue("host", "string"),
+  { name = "host", dataType = "string", mustBeSet = false },
 
   -- The port number of the database on the server
-  SettingValue("portNumber", "integer"),
+  { name = "portNumber", dataType = "integer", mustBeSet = false },
 
   -- The name of the database user
-  SettingValue("userName", "string"),
+  { name = "userName", dataType = "string", mustBeSet = false },
 
   -- The password of the database user
-  SettingValue("password", "string")
+  { name = "password", dataType = "string", mustBeSet = false }
 )
 
 
@@ -102,6 +101,8 @@ function BaseDatabaseConnection:initialize()
 
   if (self.settings:isValid()) then
     return self:initializeConnection()
+  else
+    error("Could not initialize connection: DatabaseConnection settings are not valid")
   end
 
 end
