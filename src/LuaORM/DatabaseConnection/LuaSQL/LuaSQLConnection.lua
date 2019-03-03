@@ -8,7 +8,6 @@
 local BaseDatabaseConnection = require("src/LuaORM/DatabaseConnection/BaseDatabaseConnection")
 local LuaSQLCursor = require("src/LuaORM/DatabaseConnection/LuaSQL/LuaSQLCursor")
 local Type = require("src/LuaORM/Util/Type/Type")
-local API = LuaORM_API
 
 ---
 -- Defines attributes and methods that are shared across all LuaSQL DatabaseConnection types.
@@ -54,21 +53,16 @@ LuaSQLConnection.numberOfRowsAffectedByLastQuery = nil
 --
 -- @treturn bool True if the connection was successfully initialized, false otherwise
 --
+-- @raise Error when the connection could not be established
+--
 function LuaSQLConnection:initializeConnection()
 
   self.environment = self:getEnvironment()
-  if (not self.environment) then
-    API.logger:fatal("Could not get LuaSQL environment")
-    return false
-  end
 
   self.connection = self:getConnection()
   if (not self.connection) then
-    API.logger:fatal("Could not connect to the database")
-    return false
+    error("Could not connect to the database")
   end
-
-  return true
 
 end
 

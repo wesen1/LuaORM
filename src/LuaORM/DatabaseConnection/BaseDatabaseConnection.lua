@@ -61,14 +61,20 @@ BaseDatabaseConnection.settings = SettingValueList(
 --
 -- @treturn BaseDatabaseConnection The BaseDatabaseConnection instance
 --
+-- @raise Error when no database language is defined
+--
 function BaseDatabaseConnection:__construct(_databaseConfiguration, _databaseLanguage)
 
   local instance = setmetatable({}, {__index = BaseDatabaseConnection})
 
-  instance.settings = ObjectUtils.clone(BaseDatabaseConnection.settings)
-  instance.settings:parse(_databaseConfiguration)
+  if (_databaseLanguage == nil) then
+    error("No database language defined for this DatabaseConnection")
+  end
 
   instance.databaseLanguage = _databaseLanguage
+
+  instance.settings = ObjectUtils.clone(BaseDatabaseConnection.settings)
+  instance.settings:parse(_databaseConfiguration)
 
   return instance
 
@@ -92,14 +98,10 @@ end
 ---
 -- Initializes the database connection.
 --
--- @treturn bool True if the connection was successfully initialized, false otherwise
---
 function BaseDatabaseConnection:initialize()
 
   if (self.settings:isValid()) then
     return self:initializeConnection()
-  else
-    return false
   end
 
 end
@@ -111,6 +113,8 @@ end
 --
 -- @treturn BaseCursor The Cursor to fetch the result rows
 --
+-- @raise Error when the query string could not be executed
+--
 function BaseDatabaseConnection:execute(_queryString)
 
   API.logger:sql(_queryString)
@@ -119,7 +123,7 @@ function BaseDatabaseConnection:execute(_queryString)
   if (self:isQueryResultValid(queryResult)) then
     return self:parseQueryResult(queryResult)
   else
-    API.logger:error("Could not execute query: '" .. _queryString .. "'")
+    error("Could not execute query: '" .. _queryString .. "'")
   end
 
 end
@@ -162,8 +166,6 @@ end
 
 ---
 -- Initializes the connection to the database.
---
--- @treturn bool True if the connection was successfully initialized, false otherwise
 --
 function BaseDatabaseConnection:initializeConnection()
 end

@@ -51,6 +51,8 @@ end
 --
 -- @treturn Environment The LuaSQL environment object
 --
+-- @raise Error when the luasql.mysql module cannot be loaded
+--
 function MySQLConnection:getEnvironment()
   local luasql = require("luasql.mysql")
   return luasql.mysql()

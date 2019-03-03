@@ -5,7 +5,7 @@
 -- @license MIT
 --
 
-local LuaSQLConnection = require("src/LuaORM/DatabaseConnection/LuaSQLConnection")
+local LuaSQLConnection = require("src/LuaORM/DatabaseConnection/LuaSQL/LuaSQLConnection")
 
 ---
 -- DatabaseConnection for luasql.postgres.
@@ -33,7 +33,7 @@ PostgreSQLConnection.supportsEscapeMethod = true
 --
 -- @treturn PostgreSQLConnection The PostgreSQLConnection instance
 --
-function LuaSQLConnection:__construct(_databaseConfiguration)
+function PostgreSQLConnection:__construct(_databaseConfiguration)
 
   --TODO: Implement PostgreSQLDatabaseLanguage
   local instance = LuaSQLConnection(_databaseConfiguration, nil)
@@ -50,6 +50,8 @@ end
 -- Returns the LuaSQL environment object.
 --
 -- @treturn Environment The LuaSQL environment object
+--
+-- @raise Error when the luasql.postgres module cannot be loaded
 --
 function PostgreSQLConnection:getEnvironment()
   local luasql = require("luasql.postgres")

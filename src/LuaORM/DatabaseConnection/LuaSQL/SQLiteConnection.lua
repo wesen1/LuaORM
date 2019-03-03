@@ -5,7 +5,7 @@
 -- @license MIT
 --
 
-local LuaSQLConnection = require("src/LuaORM/DatabaseConnection/LuaSQLConnection")
+local LuaSQLConnection = require("src/LuaORM/DatabaseConnection/LuaSQL/LuaSQLConnection")
 
 ---
 -- DatabaseConnection for luasql.sqlite3.
@@ -50,6 +50,8 @@ end
 -- Returns the LuaSQL environment object.
 --
 -- @treturn Environment The LuaSQL environment object
+--
+-- @raise Error when the luasql.sqlite3 module cannot be loaded
 --
 function SQLiteConnection:getEnvironment()
   local luasql = require("luasql.sqlite3")
