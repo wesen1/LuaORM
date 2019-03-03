@@ -5,9 +5,9 @@
 -- @license MIT
 --
 
-local SettableAttributeMembersClass= require("src/LuaORM/Util/Class/SettableAttributeMembersClass")
-local SettingValue = require("src/LuaORM/Util/SettingValueList/SettingValue")
-local Type = require("src/LuaORM/Util/Type/Type")
+local SettableAttributeMembersClass= require("LuaORM/Util/Class/SettableAttributeMembersClass")
+local SettingValue = require("/LuaORM/Util/SettingValueList/SettingValue")
+local Type = require("LuaORM/Util/Type/Type")
 
 ---
 -- Stores a list of SettingValue's and provides methods to parse raw data into the SettingValue's.

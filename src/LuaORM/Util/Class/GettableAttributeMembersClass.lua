@@ -5,8 +5,8 @@
 -- @license MIT
 --
 
-local TableUtils = require("src/LuaORM/Util/TableUtils")
-local Type = require("src/LuaORM/Util/Type/Type")
+local TableUtils = require("LuaORM/Util/TableUtils")
+local Type = require("LuaORM/Util/Type/Type")
 local API = LuaORM_API
 
 ---
@@ -92,7 +92,7 @@ end
 -- @treturn mixed The return value for the index name
 --
 function GettableAttributeMembersClass:getValueForUnknownIndex(_indexName)
-  API.logger:warn("Unknown attribute: Ignoring '" .. Type.toString(_indexName) .. "' index")
+  API.ORM:getLogger():warn("Unknown attribute: Ignoring '" .. Type.toString(_indexName) .. "' index")
 end
 
 ---

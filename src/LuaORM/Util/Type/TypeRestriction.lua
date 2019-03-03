@@ -5,8 +5,8 @@
 -- @license MIT
 --
 
-local ObjectUtils = require("src/LuaORM/Util/ObjectUtils")
-local Type = require("src/LuaORM/Util/Type/Type")
+local ObjectUtils = require("LuaORM/Util/ObjectUtils")
+local Type = require("LuaORM/Util/Type/Type")
 local unpack = unpack or table.unpack
 local API = LuaORM_API
 
@@ -159,7 +159,7 @@ function TypeRestriction:changeLuaDataType(_luaDataType)
     if (self:changeValidator(luaDataTypeName, classPath)) then
       self:changeConverter(luaDataTypeName, classPath)
     else
-      API.logger:warn("Could not change lua data type to '" .. _luaDataType .. "': No validator found for this type")
+      API.ORM:getLogger():warn("Could not change lua data type to '" .. _luaDataType .. "': No validator found for this type")
     end
 
   end

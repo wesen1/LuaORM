@@ -5,7 +5,7 @@
 -- @license MIT
 --
 
-local Type = require("src/LuaORM/Util/Type/Type")
+local Type = require("LuaORM/Util/Type/Type")
 
 ---
 -- Provides static object related util functions.

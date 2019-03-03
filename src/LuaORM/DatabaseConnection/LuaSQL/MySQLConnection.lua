@@ -5,8 +5,8 @@
 -- @license MIT
 --
 
-local LuaSQLConnection = require("src/LuaORM/DatabaseConnection/LuaSQL/LuaSQLConnection")
-local MySQLDatabaseLanguage = require("src/LuaORM/DatabaseLanguage/MySQL/MySQLDatabaseLanguage")
+local LuaSQLConnection = require("LuaORM/DatabaseConnection/LuaSQL/LuaSQLConnection")
+local MySQLDatabaseLanguage = require("LuaORM/DatabaseLanguage/MySQL/MySQLDatabaseLanguage")
 
 ---
 -- DatabaseConnection for luasql.mysql.

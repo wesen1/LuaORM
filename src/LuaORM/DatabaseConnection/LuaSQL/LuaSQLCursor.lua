@@ -5,7 +5,7 @@
 -- @license MIT
 --
 
-local BaseCursor = require("src/LuaORM/DatabaseConnection/BaseCursor")
+local BaseCursor = require("LuaORM/DatabaseConnection/BaseCursor")
 
 ---
 -- Cursor for LuaSQL cursors.

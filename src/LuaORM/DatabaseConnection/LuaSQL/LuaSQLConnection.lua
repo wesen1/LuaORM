@@ -5,9 +5,9 @@
 -- @license MIT
 --
 
-local BaseDatabaseConnection = require("src/LuaORM/DatabaseConnection/BaseDatabaseConnection")
-local LuaSQLCursor = require("src/LuaORM/DatabaseConnection/LuaSQL/LuaSQLCursor")
-local Type = require("src/LuaORM/Util/Type/Type")
+local BaseDatabaseConnection = require("LuaORM/DatabaseConnection/BaseDatabaseConnection")
+local LuaSQLCursor = require("LuaORM/DatabaseConnection/LuaSQL/LuaSQLCursor")
+local Type = require("LuaORM/Util/Type/Type")
 
 ---
 -- Defines attributes and methods that are shared across all LuaSQL DatabaseConnection types.

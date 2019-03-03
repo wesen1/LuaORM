@@ -5,7 +5,7 @@
 -- @license MIT
 --
 
-local LuaSQLConnection = require("src/LuaORM/DatabaseConnection/LuaSQL/LuaSQLConnection")
+local LuaSQLConnection = require("LuaORM/DatabaseConnection/LuaSQL/LuaSQLConnection")
 
 ---
 -- DatabaseConnection for luasql.postgres.

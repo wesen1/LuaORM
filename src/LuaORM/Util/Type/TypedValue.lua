@@ -5,7 +5,7 @@
 -- @license MIT
 --
 
-local TypeRestriction = require("src/LuaORM/Util/Type/TypeRestriction")
+local TypeRestriction = require("LuaORM/Util/Type/TypeRestriction")
 
 ---
 -- Stores a value that must match a specific type.

@@ -5,8 +5,8 @@
 -- @license MIT
 --
 
-local ObjectUtils = require("src/LuaORM/Util/ObjectUtils")
-local SettingValueList = require("src/LuaORM/Util/SettingValueList/SettingValueList")
+local ObjectUtils = require("LuaORM/Util/ObjectUtils")
+local SettingValueList = require("LuaORM/Util/SettingValueList/SettingValueList")
 local API = LuaORM_API
 
 ---
@@ -118,7 +118,7 @@ end
 --
 function BaseDatabaseConnection:execute(_queryString)
 
-  API.logger:sql(_queryString)
+  API.ORM:getLogger():sql(_queryString)
 
   local queryResult = self:executeQuery(_queryString)
   if (self:isQueryResultValid(queryResult)) then
@@ -158,7 +158,7 @@ end
 -- @treturn string The escaped string
 --
 function BaseDatabaseConnection:escapeString(_string)
-  API.logger:warn("This database connection does not support string escaping")
+  API.ORM:getLogger():warn("This database connection does not support string escaping")
   return _string
 end
 

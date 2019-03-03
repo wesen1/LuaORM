@@ -5,8 +5,8 @@
 -- @license MIT
 --
 
-local Type = require("src/LuaORM/Util/Type/Type")
-local TypedValue = require("src/LuaORM/Util/Type/TypedValue")
+local Type = require("LuaORM/Util/Type/Type")
+local TypedValue = require("LuaORM/Util/Type/TypedValue")
 local API = LuaORM_API
 
 ---
@@ -105,7 +105,7 @@ function SettingValue:handleInvalidValueChange(_newValue)
   if (_newValue == nil) then
     self.value = nil
   else
-    API.logger:warn(string.format(
+    API.ORM:getLogger():warn(string.format(
       "Invalid value specified for SettingValue '%s': '%s', falling back to default value '%s'",
       Type.toString(self.name),
       Type.toString(_newValue),

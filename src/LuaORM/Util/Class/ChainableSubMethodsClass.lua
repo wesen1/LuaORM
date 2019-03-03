@@ -5,8 +5,8 @@
 -- @license MIT
 --
 
-local GettableAttributeMembersClass = require("src/LuaORM/Util/Class/GettableAttributeMembersClass")
-local Type = require("src/LuaORM/Util/Type/Type")
+local GettableAttributeMembersClass = require("LuaORM/Util/Class/GettableAttributeMembersClass")
+local Type = require("LuaORM/Util/Type/Type")
 local unpack = unpack or table.unpack
 
 ---

@@ -5,7 +5,7 @@
 -- @license MIT
 --
 
-local GettableAttributeMembersClass = require("src/LuaORM/Util/Class/GettableAttributeMembersClass")
+local GettableAttributeMembersClass = require("LuaORM/Util/Class/GettableAttributeMembersClass")
 
 ---
 -- Base class for classes that allow setting and getting the values of attribute members.
