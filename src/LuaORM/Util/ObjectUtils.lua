@@ -85,6 +85,10 @@ end
 --
 function ObjectUtils.isInstanceOf(_object, _class)
 
+  if (_object == nil) then
+    return false
+  end
+
   local class
   if (Type.isString(_class)) then
     class = require(_class)
