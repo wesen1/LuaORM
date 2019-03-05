@@ -62,7 +62,13 @@ function ObjectUtils.clone(_object, _clonedObjects)
   for propertyIndex, propertyValue in pairs(_object) do
 
     local clonedPropertyIndex = ObjectUtils.clone(propertyIndex, clonedObjects)
-    local clonedPropertyValue = ObjectUtils.clone(propertyValue, clonedObjects)
+
+    local clonedPropertyValue
+    if (clonedPropertyIndex == "parentClass") then
+      clonedPropertyValue = propertyValue
+    else
+      clonedPropertyValue = ObjectUtils.clone(propertyValue, clonedObjects)
+    end
 
     clonedObject[clonedPropertyIndex] = clonedPropertyValue
 
