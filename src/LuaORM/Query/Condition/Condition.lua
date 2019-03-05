@@ -54,8 +54,8 @@ function Condition:__construct(_parentClause)
 
   local instance = ChainableSubMethodsClass(Condition)
   instance.parentClause = _parentClause
-  instance.equations = {}
   instance.currentEquation = Equation(instance)
+  instance.equations = { instance.currentEquation }
 
   return instance
 
@@ -99,28 +99,14 @@ end
 --
 function Condition:addNewEquation()
 
-  local equation = Equation(self)
+  if (not self.currentEquation:isEmpty()) then
 
-  self.currentEquation = equation
-  table.insert(self.equations, equation)
+    local equation = Equation(self)
 
-end
+    self.currentEquation = equation
+    table.insert(self.equations, equation)
 
----
--- Returns all Equations of this Condition that are not empty.
---
--- @treturn Equation[] The Equations that are not empty
---
-function Condition:getNonEmptyEquations()
-
-  local equations = {}
-  for _, equation in ipairs(self.equations) do
-    if (not equation:isEmpty()) then
-      table.insert(equations, equation)
-    end
   end
-
-  return equations
 
 end
 
@@ -130,7 +116,7 @@ end
 -- @treturn bool True if this Condition is empty, false otherwise
 --
 function Condition:isEmpty()
-  return (#self:getNonEmptyEquations() == 0)
+  return (#self.equations == 1 and self.currentEquation:isEmpty())
 end
 
 ---
@@ -145,8 +131,14 @@ function Condition:isValid()
 
   else
 
+    -- Update the current equation if it is empty
+    if (self.currentEquation:isEmpty()) then
+      self.equations[#self.equations] = nil
+      self.currentEquation = self.equations[#self.equations]
+    end
+
     -- Check whether the equations are valid
-    for _, equation in ipairs(self:getNonEmptyEquations()) do
+    for _, equation in ipairs(self.equations) do
       if (not equation:isValid()) then
         return false
       end
@@ -170,10 +162,6 @@ end
 -- @treturn object The object that will be passed as "self" to the function
 --
 function Condition:getValueForUnknownIndex(_methodName)
-
-  if (self.currentEquation == nil) then
-    self:addNewEquation()
-  end
 
   local currentEquationFunction = self.currentEquation[_methodName]
   if (currentEquationFunction ~= nil and Type.isFunction(currentEquationFunction)) then
