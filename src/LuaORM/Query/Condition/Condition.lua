@@ -111,6 +111,25 @@ function Condition:addNewEquation()
 end
 
 ---
+-- Parses a list of condition settings.
+--
+-- @tparam table _conditionSettings The list of condition settings
+--
+function Condition:parseConditionSettings(_conditionSettings)
+
+  for columnName, comparisonValue in pairs(_conditionSettings) do
+    self:AND():column(columnName)
+
+    if (Type.isTable(comparisonValue)) then
+      self.currentEquation:isInList(comparisonValue)
+    else
+      self.currentEquation:equals(comparisonValue)
+    end
+  end
+
+end
+
+---
 -- Returns whether this Condition is empty.
 --
 -- @treturn bool True if this Condition is empty, false otherwise

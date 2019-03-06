@@ -9,7 +9,6 @@ local ChainableSubMethodsClass = require("LuaORM/Util/Class/ChainableSubMethodsC
 local GroupBy = require("LuaORM/Query/Clause/GroupBy")
 local Join = require("LuaORM/Query/Clause/Join/Join")
 local Limit = require("LuaORM/Query/Clause/Limit")
-local ObjectUtils = require("LuaORM/Util/ObjectUtils")
 local OrderBy = require("LuaORM/Query/Clause/OrderBy/OrderBy")
 local TableUtils = require("LuaORM/Util/TableUtils")
 local Where = require("LuaORM/Query/Clause/Where")
@@ -111,7 +110,7 @@ Query.targetTable = nil
 Query.fieldValueRow = nil
 
 ---
--- The names of the attributes that will be searched for sub fields to return.
+-- The names of the attributes that will be searched for sub fields to return
 --
 -- @tfield string[] gettableAttributeNames
 --

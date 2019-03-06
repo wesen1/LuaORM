@@ -99,6 +99,31 @@ function Clause:isValid()
 end
 
 
+-- Protected Methods
+
+---
+-- Converts target names from dynamic function names (table or colum names) to the real column/table name.
+--
+-- @tparam String _functionTargetName The target name from the dynamic function name
+--
+-- @treturn String The corresponding column/table name
+--
+function Clause:convertDynamicFunctionTargetName(_functionTargetName)
+
+  -- Convert the first letter to lowercase
+  local targetName = _functionTargetName:sub(1,1):lower() .. _functionTargetName:sub(2)
+
+  -- Change remaining uppercase letters to "_" + lowercase letter
+  return targetName:gsub(
+    "%u",
+    function(_letter)
+      return "_" .. _letter:lower()
+    end
+  )
+
+end
+
+
 setmetatable(
   Clause,
   {

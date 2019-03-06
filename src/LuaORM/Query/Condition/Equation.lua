@@ -292,8 +292,6 @@ function Equation:isValid()
     return (self.settings.isInValueList ~= nil or self.settings.isNotSet ~= nil)
   end
 
-  return false
-
 end
 
 

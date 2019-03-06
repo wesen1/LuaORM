@@ -23,7 +23,7 @@ local ConditionClause = {}
 ConditionClause.condition = nil
 
 ---
--- The names of the attributes that will be searched for sub fields to return.
+-- The names of the attributes that will be searched for sub fields to return
 --
 -- @tfield string[] gettableAttributeNames
 --
