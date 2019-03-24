@@ -6,7 +6,7 @@
 --
 
 local Type = require("LuaORM/Util/Type/Type")
-local API = ORM_API
+local API = LuaORM_API
 
 ---
 -- Represents a JOIN rule of a Join clause.

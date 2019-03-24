@@ -8,7 +8,7 @@
 local Clause = require("LuaORM/Query/Clause")
 local OrderByRule = require("LuaORM/Query/Clause/OrderBy/OrderByRule")
 local Type = require("LuaORM/Util/Type/Type")
-local API = ORM_API
+local API = LuaORM_API
 
 ---
 -- Represents a ORDER BY clause.
@@ -160,12 +160,10 @@ function OrderBy:addRule(_columnNames)
   local columns = self.parentQuery:getColumnsByNames(_columnNames)
   if (#columns == 0) then
     API.ORM:getLogger():warn("Cannot add order by rule: List of columns is empty")
+  else
+    self.currentRule = OrderByRule(self, columns, self.defaulOrderType)
+    table.insert(self.rules, self.currentRule)
   end
-
-  local orderByRule = OrderByRule(self, columns, self.defaulOrderType)
-
-  self.currentRule = orderByRule
-  table.insert(self.rules, orderByRule)
 
 end
 

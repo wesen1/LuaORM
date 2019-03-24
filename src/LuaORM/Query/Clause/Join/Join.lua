@@ -95,7 +95,7 @@ end
 ---
 -- Adds a new rule to this clause.
 --
-function Clause:addNewRule(_tableName, _joinTypeName)
+function Join:addNewRule(_tableName, _joinTypeName)
 
   self:addJoinRule()
 

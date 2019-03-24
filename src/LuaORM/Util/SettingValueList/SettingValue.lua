@@ -69,10 +69,10 @@ end
 --
 function SettingValue:getCurrentValue()
 
-  if (self.value ~= nil) then
-    return self.value
-  else
+  if (self.value == nil) then
     return self.defaultValue
+  else
+    return self.value
   end
 
 end
