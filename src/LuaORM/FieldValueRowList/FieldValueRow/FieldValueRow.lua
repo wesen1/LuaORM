@@ -283,7 +283,7 @@ function FieldValueRow:getValueForUnknownIndex(_indexName)
 
     -- Check the extra values
     if (self.extraValues[_indexName] == nil) then
-      API.ORM:getLogger():warn("Could not find value for column '" .. _columnName .. "'")
+      API.ORM:getLogger():warn("Could not find value for column '" .. _indexName .. "'")
     else
       return self.extraValues[_indexName]
     end

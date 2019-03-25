@@ -1,0 +1,10 @@
+{#
+ # Creates a string to select a column from a specific table.
+ #
+ # @tparam TableColumn column The table column
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ #}
+
+{* language:escapeIdentifier(column:getParentTable():getName()) *}
+.
+{* language:escapeIdentifier(column:getName()) *}

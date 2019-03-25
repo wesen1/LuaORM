@@ -1,0 +1,48 @@
+{#
+ # Builds a UPDATE query.
+ #
+ # @tparam Query query The UPDATE query
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ #}
+
+UPDATE
+<whitespace>
+{* language:escapeIdentifier(query:getTargetTable():getName()) *}
+
+{# Joins #}
+{% if (not query:getClauses()["join"]:isEmpty()) then %}
+  {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Clause/Join"), { join = query:getClauses()["join"] } ]}
+{% end %}
+
+<br>
+SET
+
+{# Column names and new values #}
+{% local isFirstFieldValue = true %}
+{% for i, fieldValue in ipairs(query:getFieldValueRow():getNonEmptyFieldValues()) do %}
+
+  {% if (not fieldValue:getColumn():getSettings()["isPrimaryKey"]) then %}
+
+    {% if (isFirstFieldValue) then %}{% isFirstFieldValue = false %}
+    {% else %} ,
+    {% end %}
+
+    <br>
+    <whitespace:2>
+
+    {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Generic/TableColumn"),
+       { column = fieldValue:getColumn(), language = language }
+    ]}
+    <whitespace>
+    =
+    <whitespace>
+    {* fieldValue:getSQLString() *}
+
+  {% end %}
+
+{% end %}
+
+{[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Generic/Clauses"),
+   { query = query, language = language, ignoredClauses = { join = true, groupBy = true} }
+]}
+;

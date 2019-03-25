@@ -1,0 +1,35 @@
+{#
+ # Builds one or more JOIN clauses.
+ #
+ # @tparam Join join The join clause
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ #}
+
+{% for _, joinRule in ipairs(join:getJoinRules()) do %}
+
+  {% if (joinRule:getJoinType() == join.types.INNER) then %} INNER
+  {% elseif (joinRule:getJoinType() == join.types.LEFT) then %} LEFT OUTER
+  {% elseif (joinRule:getJoinType() == join.types.RIGHT) then %} RIGHT OUTER
+  {% end %}
+
+  <whitespace>
+  JOIN
+  <whitespace>
+  {* language:escapeIdentifier(joinRule:getRightTableColumn():getParentTable():getName()) *}
+
+  <whitespace>
+  ON
+  <whitespace>
+  {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Generic/TableColumn"),
+     { column = joinRule:getLeftTableColumn(), language = language }
+  ]}
+
+  <whitespace>
+  =
+  <whitespace>
+
+  {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Generic/TableColumn"),
+     { column = joinRule:getRightTableColumn(), language = language }
+  ]}
+
+{% end %}

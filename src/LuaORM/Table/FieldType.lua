@@ -110,6 +110,22 @@ function FieldType:getSQLDataType(_databaseConnection)
 end
 
 ---
+-- Returns whether this FieldType is unsigned.
+--
+-- @tparam BaseDatabaseLanguage _databaseLanguage The DatabaseLanguage
+--
+-- @treturn bool True if this FieldType is unsigned, false otherwise
+--
+function FieldType:isUnsigned(_databaseLanguage)
+
+  local dataType = _databaseLanguage.dataTypes[self.settings["SQLDataType"]]
+  if (dataType ~= nil) then
+    return Type.toBoolean(dataType:getSettings()["isUnsigned"])
+  end
+
+end
+
+---
 -- Returns whether a value is valid for this FieldType.
 --
 -- @tparam mixed _value The value to check

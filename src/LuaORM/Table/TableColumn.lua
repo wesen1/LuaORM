@@ -153,6 +153,25 @@ function TableColumn:getSQLDataType()
 end
 
 ---
+-- Returns the "maxLength" setting of this TableColumn.
+--
+-- @tparam BaseDatabaseLanguage _databaseLanguage The DatabaseLanguage
+--
+-- @treturn int The "maxLength" setting of this TableColumn
+--
+function TableColumn:getMaxLength(_databaseLanguage)
+
+  local dataTypeName = self:getFieldType():getSettings()["SQLDataType"]
+  local dataType = _databaseLanguage.dataTypes[dataTypeName]
+  if (dataType ~= nil and dataType:getSettings()["maxLength"] ~= nil) then
+    return dataType:getSettings()["maxLength"]
+  else
+    return self.settings["maxLength"]
+  end
+
+end
+
+---
 -- Returns the name for the column that will be used as a alias in SELECT queries.
 --
 -- @treturn string The SELECT query alias for this TableColumn
@@ -199,7 +218,10 @@ end
 -- Checks if this TableColumn's settings are valid and corrects the settings if necessary.
 --
 function TableColumn:validate()
-  self:validateMaxLengthSetting()
+
+  local databaseLanguage = API.ORM:getDatabaseConnection():getDatabaseLanguage()
+
+  self:validateMaxLengthSetting(databaseLanguage)
   self:validateAutoIncrementSetting()
   self:validateEscapeValueSetting()
 end
@@ -210,19 +232,16 @@ end
 ---
 -- Validates the "maxLength" setting.
 --
-function TableColumn:validateMaxLengthSetting()
+-- @tparam BaseDatabaseLanguage _databaseLanguage The DatabaseLanguage
+--
+function TableColumn:validateMaxLengthSetting(_databaseLanguage)
 
-  if (self.settings["maxLength"] ~= nil) then
-    if (self.settings["maxLength"] < 1) then
+  local maxLength = self.settings["maxLength"]
+  if (maxLength ~= nil and maxLength == self:getMaxLength(_databaseLanguage)) then
+    if (maxLength < 1) then
       self.settings["maxLength"] = nil
       API.ORM:getLogger():warn(string.format(
         "The maximum length may not be smaller than 1 (Column '%s')",
-        self:getSelectAlias()
-      ))
-    elseif (self.fieldType:getSettings()["SQLDataType"] == "boolean") then
-      self.settings["maxLength"] = nil
-      API.ORM:getLogger():warn(string.format(
-        "Cannot change the maximum length of a boolean column (Column '%s')",
         self:getSelectAlias()
       ))
     end

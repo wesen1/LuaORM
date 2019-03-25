@@ -1,0 +1,41 @@
+{#
+ # Builds a CREATE TABLE query.
+ #
+ # @tparam Query query The CREATE TABLE query
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ #}
+
+CREATE TABLE IF NOT EXISTS
+<whitespace>
+{* language:escapeIdentifier(query:getTargetTable():getName()) *}
+<whitespace>
+(
+  {# Columns #}
+  {% for i, column in ipairs(query:getTargetTable():getColumns()) do %}
+
+    {% if (i > 1) then %} , {% end %}
+
+    <br><whitespace:2>
+    {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Create/TableColumn"),
+       { column = column, language = language }
+    ]}
+
+  {% end %}
+
+  {# Foreign Keys #}
+  {% for _, column in ipairs(query:getTargetTable():getForeignKeyColumns()) do %}
+
+   {# There will always be at least one column definition before the foreign keys are defined, therefore
+      there must be a comma before every foreign key create statement #}
+    ,
+
+    <br><whitespace:2>
+    {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Create/ForeignKey"),
+       { column = column, language = language }
+    ]}
+
+  {% end %}
+
+<br>
+)
+;

@@ -1,0 +1,40 @@
+{#
+ # Builds a equation.
+ #
+ # @tparam Equation equation
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ #}
+
+{# Invert the equation #}
+{% if (equation:getSettings()["NOT"] == true) then %}
+  NOT
+  <whitespace>
+{% end %}
+
+{[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Generic/TableColumn"),
+   { column = equation:getSettings()["target"], language = language }
+]}
+<whitespace>
+
+{# Equation Type A: Compare column to literal #}
+{% if (equation:getSettings()["operator"] ~= nil) then %}
+
+  {* equation:getSettings()["operator"] *}
+  <whitespace>
+  {* equation:getSettings()["value"] *}
+
+
+{# Equation Type B: Compare column to value list #}
+{% elseif (equation:getSettings()["isInValueList"] ~= nil) then %}
+
+  IN (
+    {* table.concat(equation:getSettings()["isInValueList"], ", ") *}
+  )
+
+
+{# Equation Type C: Compare column to NULL #}
+{% elseif (equation:getSettings()["isNull"] == true) then %}
+
+  IS NULL
+
+{% end %}

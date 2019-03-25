@@ -1,0 +1,39 @@
+{#
+ # Builds a INSERT query.
+ #
+ # @tparam Query query The INSERT query
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ #}
+
+INSERT INTO
+<whitespace>
+{* language:escapeIdentifier(query:getTargetTable():getName()) *}
+
+<br>
+
+{% local nonEmptyFieldValues = query:getFieldValueRow():getNonEmptyFieldValues() %}
+
+{# Column names list #}
+<whitespace:2>
+(
+  {% for i, fieldValue in ipairs(nonEmptyFieldValues) do %}
+
+    {% if (i > 1) then %} ,<whitespace> {% end %}
+    {* language:escapeIdentifier(fieldValue:getColumn():getName()) *}
+
+  {% end %}
+)
+
+<br>
+
+{# Values list #}
+<whitespace:2>
+VALUES (
+  {% for i, fieldValue in ipairs(nonEmptyFieldValues) do %}
+
+    {% if (i > 1) then %} ,<whitespace> {% end %}
+    {* fieldValue:getSQLString() *}
+
+  {% end %}
+)
+;

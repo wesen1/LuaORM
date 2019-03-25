@@ -1,0 +1,27 @@
+{#
+ # Builds a ORDER BY clause.
+ #
+ # @tparam OrderBy orderBy The OrderBy clause
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ #}
+
+ORDER BY
+
+{% for i, orderByRule in ipairs(orderBy:getRules()) do %}
+
+  {% for j, orderByColumn in ipairs(orderByRule:getColumns()) do %}
+
+    {% if (i > 1 or j > 1) then %} , {% end %}
+    {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Generic/TableColumn"),
+       { column = orderByColumn, language = language }
+    ]}
+
+    {% if (orderByRule:getOrderType() == orderBy.orderTypes.ASC) then %}
+      ASC
+    {% elseif (orderByRule:getOrderType() == orderBy.orderTypes.DESC) then %}
+      DESC
+    {% end %}
+
+  {% end %}
+
+{% end %}

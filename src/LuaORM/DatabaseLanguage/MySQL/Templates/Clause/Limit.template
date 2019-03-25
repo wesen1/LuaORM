@@ -1,0 +1,12 @@
+{#
+ # Builds a LIMIT clause.
+ #
+ # @tparam Limit limit The limit clause
+ #}
+
+LIMIT {* limit:getSettings()["limit"] *}
+
+{% if (limit:getSettings()["offset"] ~= nil) then %}
+  <whitespace>
+  OFFSET {* limit:getSettings()["offset"] *}
+{% end %}
