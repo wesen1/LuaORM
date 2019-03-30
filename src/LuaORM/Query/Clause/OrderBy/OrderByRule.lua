@@ -7,7 +7,7 @@
 
 ---
 -- Stores one rule for a ORDER BY clause.
--- This includes a column list and a order type.
+-- This includes a target list and a order type.
 --
 -- @type OrderByRule
 --
@@ -15,11 +15,11 @@ local OrderByRule = {}
 
 
 ---
--- The list of columns
+-- The list of targets
 --
--- @tfield TableColumn[] columns
+-- @tfield TableColumn[]|SelectRule[] targets
 --
-OrderByRule.columns = nil
+OrderByRule.targets = nil
 
 ---
 -- The order type
@@ -43,17 +43,17 @@ OrderByRule.parentOrderByClause = nil
 -- This is the __call metamethod.
 --
 -- @tparam OrderBy _parentOrderByClause The parent OrderBy Clause
--- @tparam TableColumn[] _columns The list of columns
+-- @tparam TableColumn[]|SelectRule[] _targets The list of targets
 -- @tparam int _orderTypeId The order type id
 --
 -- @treturn OrderByRule The OrderByRule instance
 --
-function OrderByRule:__construct(_parentOrderByClause, _columns, _orderTypeId)
+function OrderByRule:__construct(_parentOrderByClause, _targets, _orderTypeId)
 
   local instance = setmetatable({}, {__index = OrderByRule})
 
   instance.parentOrderByClause = _parentOrderByClause
-  instance.columns = _columns
+  instance.targets = _targets
   instance.orderType = _orderTypeId
 
   return instance
@@ -66,10 +66,10 @@ end
 ---
 -- Returns the columns.
 --
--- @treturn TableColumn[] The list of columns
+-- @treturn TableColumn[]|SelectRule[] The list of targets
 --
-function OrderByRule:getColumns()
-  return self.columns
+function OrderByRule:getTargets()
+  return self.targets
 end
 
 ---
@@ -107,7 +107,7 @@ end
 -- @treturn bool True if this OrderByRule is valid, false otherwise
 --
 function OrderByRule:isValid()
-  return (#self.columns > 0 and self.orderType ~= nil)
+  return (#self.targets > 0 and self.orderType ~= nil)
 end
 
 

@@ -5,6 +5,8 @@
 -- @license MIT
 --
 
+local unpack = table.unpack or unpack
+
 ---
 -- Provides static table related util functions.
 --
@@ -114,6 +116,26 @@ function TableUtils.intersectTables(...)
   end
 
   return intersectedTable
+
+end
+
+---
+-- Returns a part of a table with numerical indexes.
+--
+-- @tparam table _table The table
+-- @tparam int _startIndex The start index
+-- @tparam int _endIndex The end index
+--
+-- @treturn table The partial table
+--
+function TableUtils.slice(_table, _startIndex, _endIndex)
+
+  local partialTable = unpack(_table, _startIndex, _endIndex)
+  if (partialTable == nil) then
+    return {}
+  else
+    return partialTable
+  end
 
 end
 

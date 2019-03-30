@@ -28,6 +28,13 @@ SELECT
 
 {% end %}
 
+{# Select rules #}
+{% if (not query:getClauses()["select"]:isEmpty()) then %}
+  {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Clause/Select"),
+     { select = query:getClauses()["select"], language = language }
+  ]}
+{% end %}
+
 <br>
 FROM
 <whitespace>

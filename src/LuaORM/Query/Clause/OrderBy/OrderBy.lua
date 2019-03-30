@@ -94,10 +94,10 @@ end
 ---
 -- Adds a new rule to this OrderBy clause.
 --
--- @tparam string[] _columnNames The list of column names
+-- @tparam string[] _targetNames The list of target names
 --
-function OrderBy:addNewRule(_columnNames)
-  self:addRule(Type.toTable(_columnNames))
+function OrderBy:addNewRule(_targetNames)
+  self:addRule(Type.toTable(_targetNames))
   self.parentQuery:setCurrentClause(self)
 end
 
@@ -153,15 +153,15 @@ end
 ---
 -- Adds a new OrderByRule to this OrderBy clause.
 --
--- @tparam string[] _columnNames The list of column names
+-- @tparam string[] _targetNames The list of target names
 --
-function OrderBy:addRule(_columnNames)
+function OrderBy:addRule(_targetNames)
 
-  local columns = self.parentQuery:getColumnsByNames(_columnNames)
-  if (#columns == 0) then
+  local targets = self.parentQuery:getTargetsByNames(_targetNames)
+  if (#targets == 0) then
     API.ORM:getLogger():warn("Cannot add order by rule: List of columns is empty")
   else
-    self.currentRule = OrderByRule(self, columns, self.defaulOrderType)
+    self.currentRule = OrderByRule(self, targets, self.defaulOrderType)
     table.insert(self.rules, self.currentRule)
   end
 

@@ -7,6 +7,9 @@
 
 local DataTypeList = require("LuaORM/DatabaseLanguage/DataTypeList")
 local Query = require("LuaORM/Query/Query")
+local ObjectUtils = require("LuaORM/Util/ObjectUtils")
+local SelectRule = require("LuaORM/Query/Clause/Select/SelectRule")
+local TableColumn = require("LuaORM/Table/TableColumn")
 local TableUtils = require("LuaORM/Util/TableUtils")
 local TemplateRenderer = require("LuaORM/Util/TemplateRenderer")
 
@@ -241,6 +244,27 @@ end
 --
 function BaseDatabaseLanguage:escapeIdentifier(_identifier)
   return _identifier
+end
+
+---
+-- Returns a identifier for a target.
+--
+-- @tparam TableColumn|SelectRule _target The target
+--
+-- @treturn string The identifier for the target
+--
+function BaseDatabaseLanguage:getTargetIdentifier(_target)
+
+  if (ObjectUtils.isInstanceOf(_target, TableColumn)) then
+    local templateValues = { column = _target, language = self }
+    return self.templateRenderer:renderTemplate(
+      self:getDatabaseLanguageName(), "Generic/TableColumn", templateValues
+    )
+
+  elseif (ObjectUtils.isInstanceOf(_target, SelectRule)) then
+    return self:escapeIdentifier(_target:getSelectAlias())
+  end
+
 end
 
 

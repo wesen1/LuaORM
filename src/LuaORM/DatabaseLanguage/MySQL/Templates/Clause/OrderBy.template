@@ -9,12 +9,12 @@ ORDER BY
 
 {% for i, orderByRule in ipairs(orderBy:getRules()) do %}
 
-  {% for j, orderByColumn in ipairs(orderByRule:getColumns()) do %}
+  {% for j, orderByTarget in ipairs(orderByRule:getTargets()) do %}
 
     {% if (i > 1 or j > 1) then %} , {% end %}
-    {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Generic/TableColumn"),
-       { column = orderByColumn, language = language }
-    ]}
+    <whitespace>
+    {* language:getTargetIdentifier(orderByTarget) *}
+    <whitespace>
 
     {% if (orderByRule:getOrderType() == orderBy.orderTypes.ASC) then %}
       ASC

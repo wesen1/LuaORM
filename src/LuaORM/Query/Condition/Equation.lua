@@ -50,11 +50,11 @@ Equation.settings = {
   NOT = false,
 
   ---
-  -- The column that will be compared to a value (text, number, etc.)
+  -- The target that will be compared to a value (text, number, etc.)
   --
-  -- @tfield TableColumn column
+  -- @tfield TableColumn|SelectRule target
   --
-  column = nil,
+  target = nil,
 
 
   -- Equation Type A: The column is compared to a value
@@ -155,7 +155,7 @@ end
 -- @tparam string _columnName The name of the column
 --
 function Equation:column(_columnName)
-  self:changeColumn(_columnName)
+  self:changeTarget(Type.toString(_columnName))
 end
 
 
@@ -282,7 +282,7 @@ end
 function Equation:isValid()
 
   -- Check if the comparison column is set
-  if (self.settings.column == nil) then
+  if (self.settings.target == nil) then
     return false
   end
 
@@ -298,17 +298,18 @@ end
 -- Private Methods
 
 ---
--- Changes the column of this Equation.
+-- Changes the target of this Equation.
 --
--- @tparam string _columnName The name of the column
+-- @tparam string _targetName The name of a column or the select alias of a SelectRule
 --
-function Equation:changeColumn(_columnName)
+function Equation:changeTarget(_targetName)
 
-  local column = self.parentCondition:getParentClause():getParentQuery():getColumnByName(_columnName)
-  if (column == nil) then
-    API.ORM:getLogger():warn("Can not set Equation's column: Unknown column '" .. Type.toString(_columnName) .. "'")
+  local parentQuery = self.parentCondition:getParentClause():getParentQuery()
+  local target = parentQuery:getTargetByName(_targetName)
+  if (target == nil) then
+    API.ORM:getLogger():warn("Can not set Equation's target column: Unknown column '" .. _targetName .. "'")
   else
-    self.settings.column = column
+    self.settings.target = target
   end
 
 end
@@ -320,14 +321,14 @@ end
 --
 function Equation:changeValue(_value)
 
-  if (self.settings.column == nil) then
+  if (self.settings.target == nil) then
     API.ORM:getLogger():warn("Cannot change Equations value to '" .. Type.toString(_value) .. "': Compare column was not defined")
   else
 
-    if (self.settings.column:getFieldType():validate(_value)) then
-      self.settings.value = self.settings.column:getValueQueryString(_value)
+    if (self.settings.target:validateValue(_value)) then
+      self.settings.value = self.settings.target:getValueQueryString(_value)
     else
-      API.ORM:getLogger():warn("Cannot change Equations value to '" .. Type.toString(_value) .. "': Value does not match the columns field type (Column Name: '" .. self.settings.column:getName() .. "')")
+      API.ORM:getLogger():warn("Cannot change Equations value to '" .. Type.toString(_value) .. "': Value does not match the columns field type (Column: '" .. self.settings.target:getSelectAlias() .. "')")
     end
 
   end
@@ -341,15 +342,15 @@ end
 --
 function Equation:changeValueList(_valueList)
 
-  if (self.settings.column == nil) then
+  if (self.settings.target == nil) then
     API.ORM:getLogger():warn("Cannot change Equations value list to '" .. Type.toString(_valueList) .. "': Target column is not set")
   else
 
     local valueList = {}
     for _, value in ipairs(_valueList) do
 
-      if (self.settings.column:getFieldType():validate(value)) then
-        table.insert(valueList, self.settings.column:getValueQueryString(value))
+      if (self.settings.target:validateValue(value)) then
+        table.insert(valueList, self.settings.target:getValueQueryString(value))
       else
         API.ORM:getLogger():warn("Cannot add value '" .. Type.toString(value) .. "' to Equations value list: Value does not match the columns field type")
       end
@@ -371,14 +372,7 @@ function Equation:validateComparison()
   if (self.settings.operator == "=") then
     return true
   else
-
-    local sqlDataType = self.settings.column:getFieldType():getSettings()["SQLDataType"]
-    if (API.ORM:getDatabaseConnection():getDatabaseLanguage():isNumberDataType(sqlDataType)) then
-      return true
-    else
-      return false
-    end
-
+    return self.settings.target:hasNumberDataType()
   end
 
 end

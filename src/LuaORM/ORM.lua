@@ -9,6 +9,7 @@ local Logger = require("LuaORM/Util/Logger")
 local ObjectUtils = require("LuaORM/Util/ObjectUtils")
 local QueryExecutor = require("LuaORM/QueryExecutor")
 local SettingValueList = require("LuaORM/Util/SettingValueList/SettingValueList")
+local Type = require("LuaORM/Util/Type/Type")
 
 ---
 -- Wrapper class for the ORM.
@@ -135,7 +136,7 @@ function ORM:initialize(_settings)
   self.settings:parse(_settings)
 
   -- Initialize the logger
-  self.logger:configure(_settings["logger"])
+  self.logger:configure(Type.toTable(_settings["logger"]))
 
   -- Initialize the DatabaseConnection
   self:initializeDatabaseConnection(_settings["database"])

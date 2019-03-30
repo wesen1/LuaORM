@@ -10,7 +10,9 @@ local GroupBy = require("LuaORM/Query/Clause/GroupBy")
 local Join = require("LuaORM/Query/Clause/Join/Join")
 local Limit = require("LuaORM/Query/Clause/Limit")
 local OrderBy = require("LuaORM/Query/Clause/OrderBy/OrderBy")
+local Select = require("LuaORM/Query/Clause/Select/Select")
 local TableUtils = require("LuaORM/Util/TableUtils")
+local Type = require("LuaORM/Util/Type/Type")
 local Where = require("LuaORM/Query/Clause/Where")
 local API = LuaORM_API
 
@@ -51,39 +53,46 @@ Query.type = nil
 Query.clauses = {
 
   ---
+  -- The SELECT rule(s)
+  --
+  -- @tfield Select select
+  --
+  ["select"] = nil,
+
+  ---
   -- The JOIN clause(s)
   --
   -- @tfield Join join
   --
-  join = nil,
+  ["join"] = nil,
 
   ---
   -- The WHERE clause
   --
   -- @tfield Where where
   --
-  where = nil,
+  ["where"] = nil,
 
   ---
   -- The GROUP BY clause
   --
   -- @tfield GroupBy groupBy
   --
-  groupBy = nil,
+  ["groupBy"] = nil,
 
   ---
   -- The ORDER BY clause
   --
   -- @tfield OrderBy orderBy
   --
-  orderBy = nil,
+  ["orderBy"] = nil,
 
   ---
   -- The LIMIT clause
   --
   -- @tfield Limit limit
   --
-  limit = nil
+  ["limit"] = nil
 }
 
 ---
@@ -232,7 +241,7 @@ end
 function Query:insert(_dataRow)
 
   self.type = self.types.INSERT
-  self.fieldValueRow:parseUpdate(_dataRow, false)
+  self.fieldValueRow:parseUpdate(Type.toTable(_dataRow), false)
 
   self:execute()
 
@@ -248,7 +257,7 @@ end
 function Query:update(_dataRow)
 
   self.type = Query.types.UPDATE
-  self.fieldValueRow:parseUpdate(_dataRow)
+  self.fieldValueRow:parseUpdate(Type.toTable(_dataRow), false)
 
   return self:execute()
 
@@ -311,27 +320,45 @@ function Query:getColumnByName(_columnName)
 end
 
 ---
--- Returns a list of TableColumn's from a list of colum names.
+-- Returns a TableColumn or SelectRule of this Query.
 --
--- @tparam string[] _columnNames The list of colum names
+-- @tparam string _targetName The target name
 --
--- @treturn TableColumn[] The list of columns
+-- @treturn TableColumn|SelectRule|nil The target or nil if no target with that name exists in this Query
 --
-function Query:getColumnsByNames(_columnNames)
+function Query:getTargetByName(_targetName)
 
-  local columns = {}
-  for _, columnName in ipairs(_columnNames) do
+  local column = self:getColumnByName(_targetName)
+  if (column == nil) then
+    return self.clauses.select:getSelectRuleBySelectAlias(_targetName)
+  else
+    return column
+  end
 
-    local column = self:getColumnByName(columnName)
-    if (column == nil) then
-      API.ORM:getLogger():warn("Could not find column '" .. columnName .. "' in the used query tables")
+end
+
+---
+-- Returns a list of targets from a list of target names.
+--
+-- @tparam string[] _targetNames The list of target names
+--
+-- @treturn TableColumn|SelectRule[] The list of targets
+--
+function Query:getTargetsByNames(_targetNames)
+
+  local targets = {}
+  for _, targetName in ipairs(_targetNames) do
+
+    local target = self:getTargetByName(targetName)
+    if (target == nil) then
+      API.ORM:getLogger():warn("Could not find target '" .. targetName .. "' in this Query")
     else
-      table.insert(columns, column)
+      table.insert(targets, target)
     end
 
   end
 
-  return columns
+  return targets
 
 end
 
@@ -344,11 +371,12 @@ end
 function Query:initializeClauses()
 
   self.clauses = {
-    join = Join(self),
-    where = Where(self),
-    groupBy = GroupBy(self),
-    orderBy = OrderBy(self),
-    limit = Limit(self)
+    ["select"] = Select(self),
+    ["join"] = Join(self),
+    ["where"] = Where(self),
+    ["groupBy"] = GroupBy(self),
+    ["orderBy"] = OrderBy(self),
+    ["limit"] = Limit(self)
   }
 
 end

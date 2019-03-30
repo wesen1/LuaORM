@@ -11,9 +11,7 @@
   <whitespace>
 {% end %}
 
-{[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Generic/TableColumn"),
-   { column = equation:getSettings()["target"], language = language }
-]}
+{* language:getTargetIdentifier(equation:getSettings()["target"]) *}
 <whitespace>
 
 {# Equation Type A: Compare column to literal #}
@@ -34,7 +32,5 @@
 
 {# Equation Type C: Compare column to NULL #}
 {% elseif (equation:getSettings()["isNull"] == true) then %}
-
   IS NULL
-
 {% end %}

@@ -18,11 +18,11 @@ local GroupBy = {}
 
 
 ---
--- The list of columns to group the result by
+-- The list of targets to group the query result by
 --
--- @tfield TableColumn[] columns
+-- @tfield TableColumn[]|SelectRule[] targets
 --
-GroupBy.columns = {}
+GroupBy.targets = nil
 
 
 -- Metamethods
@@ -38,7 +38,7 @@ GroupBy.columns = {}
 function GroupBy:__construct(_parentQuery)
 
   local instance = ConditionClause(_parentQuery, GroupBy)
-  instance.columns = {}
+  instance.targets = {}
 
   return instance
 
@@ -48,24 +48,24 @@ end
 -- Getters and Setters
 
 ---
--- Returns the GroupBy columns.
+-- Returns the GroupBy targets.
 --
--- @treturn TableColumn[] The GroupBy columns
+-- @treturn TableColumn[]|SelectRule[] The GroupBy targets
 --
-function GroupBy:getColumns()
-  return self.columns
+function GroupBy:getTargets()
+  return self.targets
 end
 
 
 -- API
 
 ---
--- Adds a list of columns to this GROUP BY clause.
+-- Adds a list of targets to this GROUP BY clause.
 --
--- @tparam string[] _columnNames The names of the columns to group by
+-- @tparam string[] _targetNames The names of the targets to group the query results by
 --
-function GroupBy:groupBy(_columnNames)
-  self:addColumns(Type.toTable(_columnNames))
+function GroupBy:groupBy(_targetNames)
+  self:addTargets(Type.toTable(_targetNames))
 end
 
 ---
@@ -85,12 +85,12 @@ end
 -- Public Methods
 
 ---
--- Adds a list of columns to this GroupBy clause.
+-- Adds a list of targets to this GroupBy clause.
 --
--- @tparam string[] _columnNames The list of column names
+-- @tparam string[] _targetNames The target names
 --
-function GroupBy:addNewRule(_columnNames)
-  self:groupBy(_columnNames)
+function GroupBy:addNewRule(_targetNames)
+  self:groupBy(_targetNames)
   self.parentQuery:setCurrentClause(self)
 end
 
@@ -107,7 +107,7 @@ function GroupBy:getDynamicFunctionByMethodName(_methodName)
   if (groupByColumnName ~= nil) then
 
     groupByColumnName = self:convertDynamicFunctionTargetName(groupByColumnName)
-    self:addColumns({ groupByColumnName })
+    self:addTargets({ groupByColumnName })
 
     return function() end
   end
@@ -120,7 +120,7 @@ end
 -- @treturn bool True if this Clause is empty, false otherwise
 --
 function GroupBy:isEmpty()
-  return (#self.columns == 0 and self.condition == nil)
+  return (#self.targets == 0 and self.condition == nil)
 end
 
 ---
@@ -142,15 +142,15 @@ end
 -- Private Methods
 
 ---
--- Adds columns to this GroupBy's columns.
+-- Adds targets to group the query results by.
 --
--- @tparam string[] _columnNames The column names
+-- @tparam string[] _targetNames The target names
 --
-function GroupBy:addColumns(_columnNames)
+function GroupBy:addTargets(_targetNames)
 
-  local columns = self.parentQuery:getColumnsByNames(_columnNames)
-  for _, column in ipairs(columns) do
-    table.insert(self.columns, column)
+  local targets = self.parentQuery:getTargetsByNames(_targetNames)
+  for _, target in ipairs(targets) do
+    table.insert(self.targets, target)
   end
 
 end

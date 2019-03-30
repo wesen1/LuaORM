@@ -9,12 +9,10 @@ GROUP BY
 <whitespace>
 
 {# Columns to group by #}
-{% for i, column in ipairs(groupBy:getColumns()) do %}
+{% for i, groupByTarget in ipairs(groupBy:getTargets()) do %}
 
   {% if (i > 1) then %} , {% end %}
-  {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Generic/TableColumn"),
-     { column = column, language = language }
-  ]}
+  {* language:getTargetIdentifier(groupByTarget) *}
 
 {% end %}
 

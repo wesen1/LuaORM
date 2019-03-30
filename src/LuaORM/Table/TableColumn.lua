@@ -201,7 +201,7 @@ end
 --
 -- @tparam mixed _value The value
 --
--- @treturn The query string for a value of this column
+-- @treturn string The query string for a value of this column
 --
 function TableColumn:getValueQueryString(_value)
 
@@ -211,6 +211,29 @@ function TableColumn:getValueQueryString(_value)
   end
 
   return self.fieldType:convertValueToSQLString(API.ORM:getDatabaseConnection(), value)
+
+end
+
+---
+-- Validates that a value matches this TableColumn's FieldType.
+--
+-- @tparam mixed _value The value
+--
+-- @treturn bool True if the value is valid, false otherwise
+--
+function TableColumn:validateValue(_value)
+  return self.fieldType:validate(_value)
+end
+
+---
+-- Returns whether this TableColumn has a number data type.
+--
+-- @treturn bool True if this TableColumn has a number data type, false otherwise
+--
+function TableColumn:hasNumberDataType()
+
+  local sqlDataType = self:getFieldType():getSettings()["SQLDataType"]
+  return API.ORM:getDatabaseConnection():getDatabaseLanguage():isNumberDataType(sqlDataType)
 
 end
 
