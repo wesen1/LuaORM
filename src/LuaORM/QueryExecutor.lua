@@ -6,7 +6,7 @@
 --
 
 local FieldValueRowListBuilder = require("LuaORM/FieldValueRowList/FieldValueRowListBuilder")
-local Query = require("LuaORM/Query/Query");
+local Query = require("LuaORM/Query/Query")
 local API = LuaORM_API
 
 ---
