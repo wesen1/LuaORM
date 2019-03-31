@@ -6,6 +6,7 @@
 --
 
 local ObjectUtils = require("LuaORM/Util/ObjectUtils")
+local TableColumn = require("LuaORM/Table/TableColumn")
 local Type = require("LuaORM/Util/Type/Type")
 local API = LuaORM_API
 
@@ -223,6 +224,35 @@ function Equation:equals(_value)
   else
     self.settings.operator = "="
     self:changeValue(_value)
+  end
+
+end
+
+---
+-- Configures a "equal target" Equation.
+--
+-- @tparam string _targetName The target name
+--
+function Equation:equalsColumn(_targetName)
+
+  local parentClause = self.parentCondition:getParentClause()
+  local target = parentClause:getParentQuery():getTargetByName(Type.toString(_targetName))
+
+  if (target == nil) then
+    API.ORM:getLogger():error("Error in \"equalsColumn\": Target '" .. Type.toString(_targetName) .. "' does not exist")
+  else
+
+    if (ObjectUtils.isInstanceOf(target, TableColumn)) then
+
+      local databaseLanguage = API.ORM:getDatabaseConnection():getDatabaseLanguage()
+
+      self.settings.operator = "="
+      self.settings.value = databaseLanguage:getTargetIdentifier(target)
+
+    else
+      API.ORM:getLogger():error("Error in \"equalsColumn\": Target must be a TableColumn")
+    end
+
   end
 
 end
