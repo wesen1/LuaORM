@@ -265,10 +265,25 @@ end
 --
 function SelectRule:hasNumberDataType()
 
-  if (Type.isTable(self.sqlFunction) and self.sqlFunction.hasNumberDataType == true) then
-    return true
+  if (Type.isTable(self.sqlFunction)) then
+    return (self.sqlFunction.hasNumberDataType == true)
   else
     return self.target:hasNumberDataType()
+  end
+
+end
+
+---
+-- Returns whether the result of this SelectRule has a text data type.
+--
+-- @treturn bool True if this SelectRule has a text data type, false otherwise
+--
+function SelectRule:hasTextDataType()
+
+  if (Type.isTable(self.sqlFunction)) then
+    return (self.sqlFunction.hasTextDataType == true)
+  else
+    return self.target:hasTextDataType()
   end
 
 end

@@ -22,7 +22,13 @@
   {* equation:getSettings()["value"] *}
 
 
-{# Equation Type B: Compare column to value list #}
+{# Equation Type B: Compare column to a pattern #}
+{% elseif (equation:getSettings()["isLikePattern"] ~= nil) then %}
+
+  LIKE {* equation:getSettings()["isLikePattern"] *}
+
+
+{# Equation Type C: Compare column to value list #}
 {% elseif (equation:getSettings()["isInValueList"] ~= nil) then %}
 
   IN (
@@ -30,7 +36,7 @@
   )
 
 
-{# Equation Type C: Compare column to NULL #}
+{# Equation Type D: Compare column to NULL #}
 {% elseif (equation:getSettings()["isNull"] == true) then %}
   IS NULL
 {% end %}

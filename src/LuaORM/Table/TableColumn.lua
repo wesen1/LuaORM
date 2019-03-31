@@ -238,6 +238,18 @@ function TableColumn:hasNumberDataType()
 end
 
 ---
+-- Returns whether this TableColumn has a text data type.
+--
+-- @treturn bool True if this TableColumn has a text data type, false otherwise
+--
+function TableColumn:hasTextDataType()
+
+  local sqlDataType = self:getFieldType():getSettings()["SQLDataType"]
+  return API.ORM:getDatabaseConnection():getDatabaseLanguage():isTextDataType(sqlDataType)
+
+end
+
+---
 -- Checks if this TableColumn's settings are valid and corrects the settings if necessary.
 --
 function TableColumn:validate()

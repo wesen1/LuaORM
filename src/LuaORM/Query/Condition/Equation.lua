@@ -75,7 +75,17 @@ Equation.settings = {
   value = nil,
 
 
-  -- Equation Type B: The column is compared to a list of values
+  -- Equation Type B: The column is compared to a pattern
+
+  ---
+  -- The pattern for the LIKE comparison
+  --
+  -- @tfield string isLikePattern
+  --
+  isLikePattern = nil,
+
+
+  -- Equation Type C: The column is compared to a list of values
 
   ---
   -- The list of values of which one has to equal the column value
@@ -85,7 +95,7 @@ Equation.settings = {
   isInValueList = nil,
 
 
-  -- Equation Type C: The column is compared to the "value not set" string
+  -- Equation Type D: The column is compared to the "value not set" string
 
   ---
   -- If true this Equation will check whether the column value is not set
@@ -219,6 +229,28 @@ end
 
 
 ---
+-- Compares the target to a pattern.
+--
+-- @tparam string _pattern The pattern
+--
+function Equation:isLike(_pattern)
+
+  if (Type.isString(_pattern)) then
+
+    if (self.settings.target:hasTextDataType()) then
+      local databaseLanguage = API.ORM:getDatabaseConnection():getDatabaseLanguage()
+      self.settings.isLikePattern = databaseLanguage:escapeLiteral(_pattern)
+    else
+      API.ORM:getLogger():error("Error in \"isLike\": Target has no text data type")
+    end
+
+  else
+    API.ORM:getLogger():error("Error in \"isLike\": Pattern is not a string")
+  end
+
+end
+
+---
 -- Makes the Equation check that the column value equals one element of a specified list of values.
 --
 -- @tparam mixed[] _valueList The list of values
@@ -289,7 +321,7 @@ function Equation:isValid()
   if (self.settings.operator ~= nil) then
     return self:validateComparison()
   else
-    return (self.settings.isInValueList ~= nil or self.settings.isNotSet ~= nil)
+    return (self.settings.isLikePattern ~= nil or self.settings.isInValueList ~= nil or self.settings.isNotSet ~= nil)
   end
 
 end
