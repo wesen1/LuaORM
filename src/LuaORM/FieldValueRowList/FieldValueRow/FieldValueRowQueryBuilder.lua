@@ -10,7 +10,7 @@ local Query = require("LuaORM/Query/Query")
 ---
 -- Handles building of queries for FieldValueRowQueryExecutor's.
 --
--- @tfield FieldValueRowQueryBuilder
+-- @type FieldValueRowQueryBuilder
 --
 local FieldValueRowQueryBuilder = {}
 

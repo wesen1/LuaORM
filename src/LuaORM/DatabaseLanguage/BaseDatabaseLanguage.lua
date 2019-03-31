@@ -36,7 +36,7 @@ BaseDatabaseLanguage.templateRenderer = nil
 ---
 -- Static list of database language names
 --
--- @tfield string[] databaseLanguageNames
+-- @tfield int[] databaseLanguageNames
 --
 BaseDatabaseLanguage.databaseLanguageNames = {
   MySQL = 0,
