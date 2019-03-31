@@ -232,7 +232,7 @@ end
 --
 function TableColumn:hasNumberDataType()
 
-  local sqlDataType = self:getFieldType():getSettings()["SQLDataType"]
+  local sqlDataType = self.fieldType:getSettings()["SQLDataType"]
   return API.ORM:getDatabaseConnection():getDatabaseLanguage():isNumberDataType(sqlDataType)
 
 end
