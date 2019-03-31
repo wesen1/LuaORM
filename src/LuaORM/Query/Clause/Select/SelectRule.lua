@@ -93,8 +93,8 @@ function SelectRule:__construct(_parentSelectClause, _target, _sqlFunction, _add
   instance.target = _target
   instance.sqlFunction = _sqlFunction
 
-  if (_additionalFunctionArguments ~= nil) then
-    instance.additionalFunctionArguments = self:escapeAdditionalSqlFunctionArguments(_additionalFunctionArguments)
+  if (_additionalSqlFunctionArguments ~= nil) then
+    instance.additionalFunctionArguments = self:escapeAdditionalSqlFunctionArguments(_additionalSqlFunctionArguments)
   end
 
   return instance
@@ -245,7 +245,7 @@ function SelectRule:getValueQueryString(_value)
 
     local databaseLanguage = API.ORM:getDatabaseConnection():getDatabaseLanguage()
 
-    if (value == nil) then
+    if (_value == nil) then
       return databaseLanguage:getValueNotSetString()
     else
       local value = self.sqlFunction.convert(_value)
@@ -301,7 +301,7 @@ end
 function SelectRule:escapeAdditionalSqlFunctionArguments(_additionalSqlFunctionArguments)
 
   local escapedArguments = {}
-  local databaseLanguage = ORM.API:getDatabaseConnection():getDatabaseLanguage()
+  local databaseLanguage = API.ORM:getDatabaseConnection():getDatabaseLanguage()
 
   for _, argument in ipairs(_additionalSqlFunctionArguments) do
     table.insert(escapedArguments, databaseLanguage:escapeLiteral(argument))

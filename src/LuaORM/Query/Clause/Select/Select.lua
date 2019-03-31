@@ -8,7 +8,6 @@
 local AggregateFunctionRule = require("LuaORM/Query/Clause/Select/AggregateFunctionRule")
 local Clause = require("LuaORM/Query/Clause")
 local SelectRule = require("LuaORM/Query/Clause/Select/SelectRule")
-local Type = require("LuaORM/Util/Type/Type")
 local API = LuaORM_API
 
 ---
