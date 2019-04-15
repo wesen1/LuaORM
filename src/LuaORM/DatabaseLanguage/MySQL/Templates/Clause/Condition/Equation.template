@@ -1,0 +1,42 @@
+{#
+ # Builds a equation.
+ #
+ # @tparam Equation equation
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ #}
+
+{# Invert the equation #}
+{% if (equation:getSettings()["NOT"] == true) then %}
+  NOT
+  <whitespace>
+{% end %}
+
+{* language:getTargetIdentifier(equation:getSettings()["target"]) *}
+<whitespace>
+
+{# Equation Type A: Compare column to literal #}
+{% if (equation:getSettings()["operator"] ~= nil) then %}
+
+  {* equation:getSettings()["operator"] *}
+  <whitespace>
+  {* equation:getSettings()["value"] *}
+
+
+{# Equation Type B: Compare column to a pattern #}
+{% elseif (equation:getSettings()["isLikePattern"] ~= nil) then %}
+
+  LIKE {* equation:getSettings()["isLikePattern"] *}
+
+
+{# Equation Type C: Compare column to value list #}
+{% elseif (equation:getSettings()["isInValueList"] ~= nil) then %}
+
+  IN (
+    {* table.concat(equation:getSettings()["isInValueList"], ", ") *}
+  )
+
+
+{# Equation Type D: Compare column to NULL #}
+{% elseif (equation:getSettings()["isNotSet"] == true) then %}
+  IS NULL
+{% end %}

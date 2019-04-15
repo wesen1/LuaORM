@@ -1,0 +1,11 @@
+{#
+ # Builds a WHERE clause.
+ #
+ # @tparam Where where The where clause
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ #}
+
+WHERE
+{[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Clause/Condition/Condition"),
+   { condition = where:getCondition(), language = language }
+]}

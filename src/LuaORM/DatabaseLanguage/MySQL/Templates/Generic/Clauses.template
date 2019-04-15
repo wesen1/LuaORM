@@ -1,0 +1,45 @@
+{#
+ # Builds the clauses for a query.
+ #
+ # @tparam Query query The query
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ # @tparam string[] ignoredClauses The list of ignored clauses in the format { [clauseName] = true }
+ #}
+
+{# JOIN #}
+{% if (not ignoredClauses["join"] and not query:getClauses()["join"]:isEmpty()) then %}
+  <br>
+  {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Clause/Join"),
+     { join = query:getClauses()["join"], language = language }
+  ]}
+{% end %}
+
+{# WHERE #}
+{% if (not ignoredClauses["where"] and not query:getClauses()["where"]:isEmpty()) then %}
+  <br>
+  {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Clause/Where"),
+     { where = query:getClauses()["where"], language = language }
+  ]}
+{% end %}
+
+{# GROUP BY #}
+{% if (not ignoredClauses["groupBy"] and not query:getClauses()["groupBy"]:isEmpty()) then %}
+  <br>
+  {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Clause/GroupBy"),
+     { groupBy = query:getClauses()["groupBy"], language = language }
+  ]}
+{% end %}
+
+{# ORDER BY #}
+{% if (not ignoredClauses["orderBy"] and not query:getClauses()["orderBy"]:isEmpty()) then %}
+  <br>
+  {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Clause/OrderBy"),
+     { orderBy = query:getClauses()["orderBy"], language = language }
+  ]}
+{% end %}
+
+{# LIMIT #}
+{% if (not ignoredClauses["limit"] and not query:getClauses()["limit"]:isEmpty()) then %}
+  <br>
+  {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Clause/Limit"), { limit = query:getClauses()["limit"] } ]}
+{% end %}

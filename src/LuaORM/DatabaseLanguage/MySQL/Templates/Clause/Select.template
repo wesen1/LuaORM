@@ -1,0 +1,27 @@
+{#
+ # Builds the SELECT statements for additional SELECT columns.
+ #
+ # @tparam Select select The select clause
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ #}
+
+{% for _, selectRule in ipairs(select:getRules()) do %}
+
+  ,
+  <br>
+  <whitespace:2>
+
+  {* selectRule:getSqlFunctionName() *}
+  (
+    {% for i, parameter in ipairs(selectRule:getSqlFunctionParameters()) do %}
+      {% if (i > 1) then %} , {% end %}
+      {* parameter *}
+    {% end %}
+  )
+
+  <whitespace>
+  AS
+  <whitespace>
+  {* language:escapeIdentifier(selectRule:getSelectAlias()) *}
+
+{% end %}

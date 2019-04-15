@@ -1,0 +1,30 @@
+{#
+ # Builds a condition.
+ #
+ # @tparam Condition condition The condition
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ #}
+
+{% local equations = condition:getEquations() %}
+{% local numberOfEquations = #equations %}
+{% for i, equation in ipairs(equations) do %}
+
+  <whitespace>
+  {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Clause/Condition/Equation"),
+     { equation = equation, language = language }
+  ]}
+
+  {# There are more equations, so a chain operator is needed #}
+  {% if (i < numberOfEquations) then %}
+
+    <br>
+    <whitespace:2>
+    {% if (equation:getChainOperatorToNextEquation() == equation.chainOperators.AND) then %}
+      AND
+    {% else %}
+      OR
+    {% end %}
+
+  {% end %}
+
+{% end %}

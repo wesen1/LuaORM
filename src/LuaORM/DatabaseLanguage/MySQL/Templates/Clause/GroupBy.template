@@ -1,0 +1,28 @@
+{#
+ # Builds a GROUP BY clause.
+ #
+ # @tparam GroupBy groupBy The GroupBy clause
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ #}
+
+GROUP BY
+<whitespace>
+
+{# Columns to group by #}
+{% for i, groupByTarget in ipairs(groupBy:getTargets()) do %}
+
+  {% if (i > 1) then %} , {% end %}
+  {* language:getTargetIdentifier(groupByTarget) *}
+
+{% end %}
+
+{# Condition for the grouped results #}
+{% if (groupBy:getCondition() ~= nil and not groupBy:getCondition():isEmpty()) then %}
+
+  <br>
+  HAVING
+  {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Clause/Condition/Condition"),
+     { condition = groupBy:getCondition(), language = language }
+  ]}
+
+{% end %}

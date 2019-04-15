@@ -1,0 +1,21 @@
+{#
+ # Builds a FOREIGN KEY statement for a CREATE TABLE query.
+ #
+ # @tparam TableColumn column The foreign key column
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ #}
+
+FOREIGN KEY (
+  {* language:escapeIdentifier(column:getName()) *}
+)
+
+<whitespace>
+
+REFERENCES
+<whitespace>
+
+{% local foreignTable = column:getSettings()["isForeignKeyTo"] %}
+{* language:escapeIdentifier(foreignTable:getName()) *}
+(
+  {* language:escapeIdentifier(foreignTable:getPrimaryKeyColumn():getName()) *}
+)

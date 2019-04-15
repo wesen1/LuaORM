@@ -1,0 +1,56 @@
+{#
+ # Builds a column create command for a CREATE TABLE query.
+ #
+ # @tparam TableColumn column The column
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ #}
+
+{# Column name #}
+{* language:escapeIdentifier(column:getName()) *}
+
+{# Data Type #}
+<whitespace>
+{* column:getSQLDataType()*}
+
+{# Max Length #}
+{% local maxLength = column:getMaxLength(language) %}
+{% if (maxLength ~= nil) then %}
+  <whitespace>
+  (
+    {* maxLength *}
+  )
+{% end %}
+
+{# Unsigned #}
+{% if (column:getFieldType():isUnsigned(language)) then %}
+  <whitespace>
+  UNSIGNED
+  <whitespace>
+{% end %}
+
+{# Primary key #}
+{% if (column:getSettings()["isPrimaryKey"] == true) then %}
+  <whitespace>
+  PRIMARY KEY
+{% end %}
+
+{# Auto increment #}
+{% if (column:getSettings()["autoIncrement"] == true) then %}
+  <whitespace>
+  AUTO_INCREMENT
+{% end %}
+
+{# Unique #}
+{% if (column:getSettings()["unique"] == true) then %}
+  <whitespace>
+  UNIQUE
+{% end %}
+
+{# Define whether the column may be NULL (not set) #}
+{% if (column:getSettings()["mustBeSet"] == true) then %}
+  <whitespace>
+  NOT
+{% end %}
+
+<whitespace>
+NULL

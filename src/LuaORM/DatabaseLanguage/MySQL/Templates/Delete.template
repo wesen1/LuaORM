@@ -1,0 +1,20 @@
+{#
+ # Builds a DELETE query.
+ #
+ # @tparam Query query The DELETE query
+ # @tparam BaseDatabaseLanguage language The DatabaseLanguage
+ #}
+
+DELETE
+
+<br>
+
+<whitespace:2>
+FROM
+<whitespace>
+{* language:escapeIdentifier(query:getTargetTable():getName()) *}
+
+{[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Generic/Clauses"),
+   { query = query, language = language, ignoredClauses = { groupBy = true } }
+]}
+;
