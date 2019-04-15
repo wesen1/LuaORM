@@ -19,7 +19,7 @@ SET
 
 {# Column names and new values #}
 {% local isFirstFieldValue = true %}
-{% for i, fieldValue in ipairs(query:getFieldValueRow():getNonEmptyFieldValues()) do %}
+{% for i, fieldValue in ipairs(query:getFieldValueRow():getChangedFieldValues()) do %}
 
   {% if (not fieldValue:getColumn():getSettings()["isPrimaryKey"]) then %}
 

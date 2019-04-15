@@ -311,10 +311,16 @@ end
 function Query:getColumnByName(_columnName)
 
   for _, usedTable in ipairs(self:getUsedTables()) do
+
     local usedTableColumn = usedTable:getColumnByName(_columnName)
+    if (usedTableColumn == nil) then
+      usedTableColumn = usedTable:getColumnBySelectAlias(_columnName)
+    end
+
     if (usedTableColumn ~= nil) then
       return usedTableColumn
     end
+
   end
 
 end

@@ -37,6 +37,6 @@
 
 
 {# Equation Type D: Compare column to NULL #}
-{% elseif (equation:getSettings()["isNull"] == true) then %}
+{% elseif (equation:getSettings()["isNotSet"] == true) then %}
   IS NULL
 {% end %}

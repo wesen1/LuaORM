@@ -194,7 +194,7 @@ function JoinRule:changeLeftTableColumn(_leftTableColumnName)
 
   else
 
-    local leftTableColumn = self.parentJoinList:getParentQuery():getColumnByName(_leftTableColumnName)
+    local leftTableColumn = self.parentJoin:getParentQuery():getColumnByName(_leftTableColumnName)
     if (leftTableColumn == nil) then
       leftTableColumnError = "Column not found"
 
@@ -228,6 +228,10 @@ function JoinRule:changeRightTableColumn(_rightTableColumnName)
   else
 
     local rightTableColumn = self.rightTableColumn:getParentTable():getColumnByName(_rightTableColumnName)
+    if (rightTableColumn == nil) then
+      rightTableColumn = self.rightTableColumn:getParentTable():getColumnBySelectAlias(_rightTableColumnName)
+    end
+
     if (rightTableColumn == nil) then
       rightTableColumnError = "Column not found in JOIN's target table"
     else

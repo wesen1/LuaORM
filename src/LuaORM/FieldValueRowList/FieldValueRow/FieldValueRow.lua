@@ -195,14 +195,21 @@ function FieldValueRow:matches(_dataRow, _isQueryResult)
   -- Find and convert the data rows primary key value
   local primaryKeyColumn = primaryKeyFieldValue:getColumn()
   local primaryKeyColumnIndex = self.dataParser:getDataRowIndexByColumn(_dataRow, primaryKeyColumn, _isQueryResult)
-  local rawDataRowPrimaryKeyValue = _dataRow[primaryKeyColumnIndex]
-  local dataRowPrimaryKeyValue = primaryKeyColumn:getFieldType():convertValueToFieldType(rawDataRowPrimaryKeyValue)
 
-  if (primaryKeyFieldValue:getLastQueryResultValue() == dataRowPrimaryKeyValue) then
-    self.dataParser:markDataRowValuesAsParsed(_dataRow, _isQueryResult)
-    return true
+  local rawDataRowPrimaryKeyValue = _dataRow[primaryKeyColumnIndex]
+  if (rawDataRowPrimaryKeyValue == nil) then
+    return primaryKeyFieldValue:isEmpty()
   else
-    return false
+
+    local dataRowPrimaryKeyValue = primaryKeyColumn:getFieldType():convertValueToFieldType(rawDataRowPrimaryKeyValue)
+
+    if (primaryKeyFieldValue:getLastQueryResultValue() == dataRowPrimaryKeyValue) then
+      self.dataParser:markDataRowValuesAsParsed(_dataRow, _isQueryResult)
+      return true
+    else
+      return false
+    end
+
   end
 
 end
@@ -223,6 +230,33 @@ function FieldValueRow:getNonEmptyFieldValues()
 
   return nonEmptyFieldValues
 
+end
+
+---
+-- Returns all FieldValue's of this FieldValueRow whose values have changed.
+--
+-- @treturn FieldValue[] The list of FieldValue's whose values have changed
+--
+function FieldValueRow:getChangedFieldValues()
+
+  local changedFieldValues = {}
+  for _, fieldValue in pairs(self.fieldValues) do
+    if (not fieldValue:isEmpty() and fieldValue:hasValueChanged()) then
+      table.insert(changedFieldValues, fieldValue)
+    end
+  end
+
+  return changedFieldValues
+
+end
+
+---
+-- Returns whether this FieldValueRow is empty.
+--
+-- @treturn bool True if this FieldValueRow is empty, false otherwise
+--
+function FieldValueRow:isEmpty()
+  return (#self:getNonEmptyFieldValues() == 0)
 end
 
 ---

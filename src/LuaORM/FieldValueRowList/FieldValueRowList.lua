@@ -6,6 +6,7 @@
 --
 
 local GettableAttributeMembersClass = require("LuaORM/Util/Class/GettableAttributeMembersClass")
+local ObjectUtils = require("LuaORM/Util/ObjectUtils")
 
 ---
 -- Stores a list of FieldValueRow's for a specific table.
@@ -83,7 +84,7 @@ end
 --
 function FieldValueRowList:update(_dataRow)
   for _, fieldValueRow in ipairs(self.fieldValueRows) do
-    fieldValueRow:update(_dataRow)
+    fieldValueRow:update(ObjectUtils.clone(_dataRow))
   end
 end
 

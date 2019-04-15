@@ -53,18 +53,24 @@ function FieldValueRowListBuilder:parseQueryResult(_dataRows, _targetTable, _que
   local dataRowsForTargetTableFieldValueRow = {}
 
   local remainingDataWasParsed
+  local isTargetTable
   for dataRowNumber, dataRow in ipairs(_dataRows) do
 
     remainingDataWasParsed = false
     for _, queryTable in ipairs(_queryTables) do
 
-      if (currentFieldValueRows[queryTable] == nil or not currentFieldValueRows[queryTable]:matches(dataRow, true)) then
+      isTargetTable = (queryTable == _targetTable)
+
+      if (currentFieldValueRows[queryTable] == nil or
+          not currentFieldValueRows[queryTable]:matches(dataRow, true) or
+          isTargetTable and currentFieldValueRows[queryTable]:isEmpty()
+         ) then
 
         -- Complete the current field value row for the query table
         if (currentFieldValueRows[queryTable] ~= nil) then
 
           -- Parse the remaining data
-          if (queryTable == _targetTable) then
+          if (isTargetTable) then
             currentFieldValueRows[_targetTable]:parseRemainingData(dataRowsForTargetTableFieldValueRow)
             dataRowsForTargetTableFieldValueRow = {}
             remainingDataWasParsed = true
@@ -80,16 +86,20 @@ function FieldValueRowListBuilder:parseQueryResult(_dataRows, _targetTable, _que
         local fieldValueRow = FieldValueRow(queryTable)
         fieldValueRow:parse(dataRow, true)
 
-        -- Add the new FieldValueRow to all sub FieldValueRowList's whose main table is the current query table
-        for _, subTableFieldValueRowLists in pairs(currentSubTableFieldValueRowLists) do
-          if (subTableFieldValueRowLists[queryTable] ~= nil) then
-            subTableFieldValueRowLists[queryTable]:addFieldValueRow(fieldValueRow)
-          end
-        end
+        if (not fieldValueRow:isEmpty() or isTargetTable) then
 
-        -- Add the FieldValueRow to the target Table's FieldValueRowList if necessary
-        if (queryTable == _targetTable) then
-          targetTableFieldValueRowList:addFieldValueRow(fieldValueRow)
+          -- Add the new FieldValueRow to all sub FieldValueRowList's whose main table is the current query table
+          for _, subTableFieldValueRowLists in pairs(currentSubTableFieldValueRowLists) do
+            if (subTableFieldValueRowLists[queryTable] ~= nil) then
+              subTableFieldValueRowLists[queryTable]:addFieldValueRow(fieldValueRow)
+            end
+          end
+
+          -- Add the FieldValueRow to the target Table's FieldValueRowList if necessary
+          if (isTargetTable) then
+            targetTableFieldValueRowList:addFieldValueRow(fieldValueRow)
+          end
+
         end
 
         -- Create a new set of sub FieldValueRowList's for the new FieldValueRow
@@ -171,7 +181,7 @@ function FieldValueRowListBuilder:addFieldValueRowsToEmptyLists(_fieldValueRowLi
 
     if (fieldValueRowList:count() == 0) then
       local fieldValueRow = _currentFieldValueRows[targetTable]
-      if (fieldValueRow ~= nil) then
+      if (fieldValueRow ~= nil and not fieldValueRow:isEmpty()) then
         fieldValueRowList:addFieldValueRow(fieldValueRow)
       end
     end

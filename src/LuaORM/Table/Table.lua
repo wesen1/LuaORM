@@ -222,6 +222,21 @@ function Table:getColumnByName(_columnName)
 end
 
 ---
+-- Returns a TableColumn of this Table by it's select alias.
+--
+-- @tparam string _selectAlias The select alias
+--
+-- @treturn TableColumn|nil The TableColumn or nil if no TableColumn with that select alias exists
+--
+function Table:getColumnBySelectAlias(_selectAlias)
+  for _, column in ipairs(self.columns) do
+    if (column:getSelectAlias() == _selectAlias) then
+      return column
+    end
+  end
+end
+
+---
 -- Checks and returns whether this Table is valid.
 --
 -- @treturn bool True if the table is valid, false otherwise
