@@ -7,7 +7,6 @@
 
 ---
 -- The API for users of this library.
--- This is the file that is returned when require("LuaORM") is called.
 --
 
 if (LuaORM_API == nil) then

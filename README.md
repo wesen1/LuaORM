@@ -12,6 +12,7 @@ Usage
 ### Include LuaORM ###
 
 You can include LuaORM by using `require "<path to LuaORM directory>/src/API"`. <br />
+If you installed LuaORM with luarocks you can include it with `require "LuaORM.API"`. <br />
 The returned object has the following fields:
 
 | Field Name | Description                                      |
