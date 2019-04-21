@@ -107,7 +107,9 @@ end
 -- @treturn bool True if the SQL data type is a text data type that is not defined in the list of data types, false otherwise
 --
 function MySQLDatabaseLanguage:isNonDefaultTextDataType(_sqlDataType)
-  return _sqlDataType:upper():match("TEXT") or _sqlDataType:upper():match("CHAR")
+  return _sqlDataType:upper():match("TEXT") or
+         _sqlDataType:upper():match("CHAR") or
+         _sqlDataType:upper():match("BINARY")
 end
 
 
