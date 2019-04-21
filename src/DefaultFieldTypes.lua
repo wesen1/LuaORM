@@ -50,10 +50,7 @@ defaultFieldTypes.dateTimeField = FieldType({
               else
                 return _value
               end
-            end,
-  to = function (value)
-         return os.date("*t", value)
-       end
+            end
 })
 
 
