@@ -5,7 +5,11 @@
  # @tparam BaseDatabaseLanguage language The DatabaseLanguage
  #}
 
-{% for _, joinRule in ipairs(join:getJoinRules()) do %}
+{% for i, joinRule in ipairs(join:getJoinRules()) do %}
+
+  {% if (i > 1) then %}
+    <br>
+  {% end %}
 
   {% if (joinRule:getJoinType() == join.types.INNER) then %} INNER
   {% elseif (joinRule:getJoinType() == join.types.LEFT) then %} LEFT OUTER
