@@ -25,7 +25,6 @@
 {% if (column:getFieldType():isUnsigned(language)) then %}
   <whitespace>
   UNSIGNED
-  <whitespace>
 {% end %}
 
 {# Primary key #}

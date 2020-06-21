@@ -1,1 +1,8 @@
 theme: jekyll-theme-cayman
+exclude:
+  - src
+  - .gitignore
+  - VagrantProvision.sh
+  - Vagrantfile
+  - example.lua
+  - luaorm-1.1.0-1.rockspec

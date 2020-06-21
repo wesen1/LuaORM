@@ -72,6 +72,17 @@ function DataTypeList:setValueForUnknownAttributeMember(_dataTypeName, _type)
 
 end
 
+---
+-- Returns the value for table indexes that were not found in the parent class and the gettable attributes.
+--
+-- @tparam mixed _indexName The index name
+--
+-- @treturn mixed The return value for the index name
+--
+function DataTypeList:getValueForUnknownIndex(_indexName)
+  -- Silently ignore the attempt to get the value for an unknown index
+end
+
 
 -- Private Methods
 
