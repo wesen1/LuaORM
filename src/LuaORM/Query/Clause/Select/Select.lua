@@ -7,7 +7,9 @@
 
 local AggregateFunctionRule = require("LuaORM/Query/Clause/Select/AggregateFunctionRule")
 local Clause = require("LuaORM/Query/Clause")
+local ObjectUtils = require("LuaORM/Util/ObjectUtils")
 local SelectRule = require("LuaORM/Query/Clause/Select/SelectRule")
+local TableColumn = require("LuaORM/Table/TableColumn")
 local API = LuaORM_API
 
 ---
@@ -82,6 +84,24 @@ function Select:addNewRule(_targetName, _sqlFunction, _additionalSqlFunctionArgu
   end
 
   self.parentQuery:setCurrentClause(self)
+
+end
+
+---
+-- Returns all TableColumn's that are used by this Clause.
+--
+-- @treturn TableColumn[] The list of used TableColumn's
+--
+function Select:getUsedTableColumns()
+
+  local usedTableColumns = {}
+  for _, selectRule in ipairs(self.rules) do
+    if (ObjectUtils.isInstanceOf(selectRule:getTarget(), TableColumn)) then
+      table.insert(usedTableColumns, selectRule:getTarget())
+    end
+  end
+
+  return usedTableColumns
 
 end
 

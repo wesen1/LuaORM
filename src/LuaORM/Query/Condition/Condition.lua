@@ -7,6 +7,8 @@
 
 local ChainableSubMethodsClass = require("LuaORM/Util/Class/ChainableSubMethodsClass")
 local Equation = require("LuaORM/Query/Condition/Equation")
+local ObjectUtils = require("LuaORM/Util/ObjectUtils")
+local TableColumn = require("LuaORM/Table/TableColumn")
 local Type = require("LuaORM/Util/Type/Type")
 
 ---
@@ -126,6 +128,27 @@ function Condition:parseConditionSettings(_conditionSettings)
       self.currentEquation:equals(comparisonValue)
     end
   end
+
+end
+
+---
+-- Returns all TableColumn's that are used by this Condition.
+--
+-- @treturn TableColumn[] The list of used TableColumn's
+--
+function Condition:getUsedTableColumns()
+
+  local usedTableColumns = {}
+
+  local target
+  for _, equation in ipairs(self.equations) do
+    target = equation:getSettings()["target"]
+    if (ObjectUtils.isInstanceOf(target, TableColumn)) then
+      table.insert(usedTableColumns, target)
+    end
+  end
+
+  return usedTableColumns
 
 end
 

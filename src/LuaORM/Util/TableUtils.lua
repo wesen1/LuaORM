@@ -56,6 +56,22 @@ function TableUtils.tableHasIndex(_table, _index)
 end
 
 ---
+-- Creates and returns a copy of a given table.
+--
+-- @tparam mixed[] _table The table to copy
+--
+-- @treturn mixed[] The copy of the given table
+--
+function TableUtils.copyTable(_table)
+  local copy = {}
+  for key, value in pairs(_table) do
+    copy[key] = value
+  end
+
+  return copy
+end
+
+---
 -- Merges the items of multiples tables with numeric indexes into one table.
 --
 -- @tparam table ... The tables to concatenate (optional number of arguments)

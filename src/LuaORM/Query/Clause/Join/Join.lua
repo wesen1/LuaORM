@@ -142,6 +142,23 @@ function Join:getDynamicFunctionByMethodName(_methodName)
 end
 
 ---
+-- Returns all TableColumn's that are used by this Clause.
+--
+-- @treturn TableColumn[] The list of used TableColumn's
+--
+function Join:getUsedTableColumns()
+
+  local usedTableColumns = {}
+  for _, joinRule in ipairs(self.joinRules) do
+    table.insert(usedTableColumns, joinRule:getLeftTableColumn())
+    table.insert(usedTableColumns, joinRule:getRightTableColumn())
+  end
+
+  return usedTableColumns
+
+end
+
+---
 -- Returns whether this Clause is empty.
 --
 -- @treturn bool True if this Clause is empty, false otherwise

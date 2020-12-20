@@ -112,6 +112,22 @@ Query.currentClause = nil
 Query.targetTable = nil
 
 ---
+-- The options for the query
+--
+-- @tfield mixed[] options
+--
+Query.options = {
+
+  ---
+  -- Option to only auto select table columns that are aggregated
+  -- Defaults to false
+  --
+  -- @tfield bool selectOnlyAggregatedTableColumns
+  --
+  ["selectOnlyAggregatedTableColumns"] = false
+}
+
+---
 -- The FieldValueRow whose FieldValue's will be used for UPDATE and INSERT queries
 --
 -- @tfield FieldValueRow fieldValueRow
@@ -142,6 +158,7 @@ function Query:__construct(_targetTable, _fieldValueRow)
   local instance = ChainableSubMethodsClass(Query)
 
   instance.targetTable = _targetTable
+  instance.options = TableUtils.copyTable(Query.options)
   instance.fieldValueRow = _fieldValueRow
 
   instance:initializeClauses()
@@ -178,6 +195,15 @@ end
 --
 function Query:getClauses()
   return self.clauses
+end
+
+---
+-- Returns the options for the query.
+--
+-- @treturn mixed[] The options
+--
+function Query:getOptions()
+  return self.options
 end
 
 ---
@@ -299,6 +325,42 @@ end
 --
 function Query:getUsedTables()
   return TableUtils.concatenateTables({ self.targetTable }, self.clauses.join:getJoinedTables())
+end
+
+---
+-- Returns all TableColumn's of all tables that are used in this query.
+--
+-- @treturn TableColumn[] The list of all TableColumn's of all used tables
+--
+function Query:getAllTableColumns()
+
+  local tableColumns = {}
+  for _, usedTable in ipairs(self:getUsedTables()) do
+    for _, column in ipairs(usedTable:getColumns()) do
+      table.insert(tableColumns, column)
+    end
+  end
+
+  return tableColumns
+
+end
+
+---
+-- Returns all aggregated TableColumn's of this Query.
+--
+-- @treturn TableColumn[] The list of all aggregated TableColumn's of this Query
+--
+function Query:getAggregatedTableColumns()
+
+  local aggregatedTableColumns = {}
+  for _, usedTableColumn in ipairs(self.clauses["groupBy"]:getUsedTableColumns()) do
+    if (not TableUtils.tableHasValue(aggregatedTableColumns, usedTableColumn)) then
+      table.insert(aggregatedTableColumns, usedTableColumn)
+    end
+  end
+
+  return aggregatedTableColumns
+
 end
 
 ---
@@ -426,6 +488,15 @@ function Query:getValueForUnknownIndex(_methodName)
       return childFunction, clause
     end
 
+  end
+
+  -- Check if it is one of the options
+  if (self.options[_methodName] ~= nil) then
+    local optionSetter = function(_self, _optionValue)
+      self.options[_methodName] = _optionValue
+    end
+
+    return optionSetter, self
   end
 
 end
