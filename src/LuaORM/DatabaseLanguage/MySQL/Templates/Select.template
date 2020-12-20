@@ -8,23 +8,25 @@
 SELECT
 
 {# List of columns #}
-{% for i, usedTable in ipairs(query:getUsedTables()) do %}
+{% if (query:getOptions()["selectOnlyAggregatedTableColumns"] == true) then %}
+  {% tableColumns = query:getAggregatedTableColumns() %}
+{% else %}
+  {% tableColumns = query:getAllTableColumns() %}
+{% end %}
 
-  {% for j, column in ipairs(usedTable:getColumns()) do %}
+{% for i, column in ipairs(tableColumns) do %}
 
-    {% if (i > 1 or j > 1) then %} , {% end %}
+  {% if (i > 1) then %} , {% end %}
 
-    <br>
-    <whitespace:2>
-    {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Generic/TableColumn"),
-       { column = column, language = language }
-    ]}
-    <whitespace>
-    AS
-    <whitespace>
-    {* language:escapeIdentifier(column:getSelectAlias()) *}
-
-  {% end %}
+  <br>
+  <whitespace:2>
+  {[ LuaORM_API.ORM:getTemplateRequirePath("MySQL", "Generic/TableColumn"),
+     { column = column, language = language }
+  ]}
+  <whitespace>
+  AS
+  <whitespace>
+  {* language:escapeIdentifier(column:getSelectAlias()) *}
 
 {% end %}
 
