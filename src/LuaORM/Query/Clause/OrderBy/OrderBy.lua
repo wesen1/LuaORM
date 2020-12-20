@@ -6,7 +6,9 @@
 --
 
 local Clause = require("LuaORM/Query/Clause")
+local ObjectUtils = require("LuaORM/Util/ObjectUtils")
 local OrderByRule = require("LuaORM/Query/Clause/OrderBy/OrderByRule")
+local TableColumn = require("LuaORM/Table/TableColumn")
 local Type = require("LuaORM/Util/Type/Type")
 local API = LuaORM_API
 
@@ -118,6 +120,26 @@ function OrderBy:getDynamicFunctionByMethodName(_methodName)
 
     return function() end
   end
+
+end
+
+---
+-- Returns all TableColumn's that are used by this Clause.
+--
+-- @treturn TableColumn[] The list of used TableColumn's
+--
+function OrderBy:getUsedTableColumns()
+
+  local usedTableColumns = {}
+  for _, orderByRule in ipairs(self.rules) do
+    for _, orderByRuleTarget in ipairs(orderByRule:getTargets()) do
+      if (ObjectUtils.isInstanceOf(orderByRuleTarget, TableColumn)) then
+        table.insert(usedTableColumns, orderByRuleTarget)
+      end
+    end
+  end
+
+  return usedTableColumns
 
 end
 

@@ -7,6 +7,9 @@
 
 local ConditionClause = require("LuaORM/Query/ConditionClause")
 local Condition = require("LuaORM/Query/Condition/Condition")
+local ObjectUtils = require("LuaORM/Util/ObjectUtils")
+local TableColumn = require("LuaORM/Table/TableColumn")
+local TableUtils = require("LuaORM/Util/TableUtils")
 local Type = require("LuaORM/Util/Type/Type")
 
 ---
@@ -23,6 +26,13 @@ local GroupBy = {}
 -- @tfield TableColumn[]|SelectRule[] targets
 --
 GroupBy.targets = nil
+
+---
+-- The HAVING condition
+--
+-- @tfield Condition condition
+--
+GroupBy.condition = nil
 
 
 -- Metamethods
@@ -111,6 +121,28 @@ function GroupBy:getDynamicFunctionByMethodName(_methodName)
 
     return function() end
   end
+
+end
+
+---
+-- Returns all TableColumn's that are used by this Clause.
+--
+-- @treturn TableColumn[] The list of used TableColumn's
+--
+function GroupBy:getUsedTableColumns()
+
+  local usedTableColumns = {}
+  for _, target in ipairs(self.targets) do
+    if (ObjectUtils.isInstanceOf(target, TableColumn)) then
+      table.insert(usedTableColumns, target)
+    end
+  end
+
+  if (self.condition ~= nil) then
+    usedTableColumns = TableUtils.concatenateTables(usedTableColumns, self.condition:getUsedTableColumns())
+  end
+
+  return usedTableColumns
 
 end
 
