@@ -368,5 +368,18 @@ local users = User:get():find()
 print("Found " .. users:count() .. " users")
 
 
+-- 6 Special Options
+
+-- 6.1 selectOnlyAggregatedColumns
+
+local users = User:get()
+                  :select():min("age")
+                  :filterByUserName("root")
+                  :groupByUserName()
+                  :having():column("user_name"):equals("root")
+                  :selectOnlyAggregatedTableColumns(true)
+                  :find()
+
+
 local timePassed = os.clock() - startTimeStamp
 print("\nExecution took " .. timePassed .. " seconds")
