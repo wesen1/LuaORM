@@ -52,11 +52,9 @@ function FieldValueRowListBuilder:parseQueryResult(_dataRows, _targetTable, _que
   local currentSubTableFieldValueRowLists = {}
   local dataRowsForTargetTableFieldValueRow = {}
 
-  local remainingDataWasParsed
   local isTargetTable
-  for dataRowNumber, dataRow in ipairs(_dataRows) do
+  for _, dataRow in ipairs(_dataRows) do
 
-    remainingDataWasParsed = false
     for _, queryTable in ipairs(_queryTables) do
 
       isTargetTable = (queryTable == _targetTable)
@@ -73,7 +71,6 @@ function FieldValueRowListBuilder:parseQueryResult(_dataRows, _targetTable, _que
           if (isTargetTable) then
             currentFieldValueRows[_targetTable]:parseRemainingData(dataRowsForTargetTableFieldValueRow)
             dataRowsForTargetTableFieldValueRow = {}
-            remainingDataWasParsed = true
           end
 
           -- Fill empty sub FieldValueRowList's with the current FieldValueRow for the list's target Table
@@ -116,7 +113,8 @@ function FieldValueRowListBuilder:parseQueryResult(_dataRows, _targetTable, _que
 
   end
 
-  if (remainingDataWasParsed == false) then
+  if (currentFieldValueRows[_targetTable] ~= nil) then
+    -- Always parse the remaining data to make sure that the last added dataRow data gets parsed too
     currentFieldValueRows[_targetTable]:parseRemainingData(dataRowsForTargetTableFieldValueRow)
   end
 

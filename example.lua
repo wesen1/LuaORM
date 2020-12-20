@@ -372,14 +372,17 @@ print("Found " .. users:count() .. " users")
 
 -- 6.1 selectOnlyAggregatedColumns
 
+print("Selecting only aggregated columns ...")
 local users = User:get()
                   :select():min("age")
-                  :filterByUserName("root")
                   :groupByUserName()
-                  :having():column("user_name"):equals("root")
                   :selectOnlyAggregatedTableColumns(true)
                   :find()
+print("Found " .. users:count() .. " rows")
 
+for i = 1, users:count(), 1 do
+  print(i, users[i].MIN_age, users[i].user_name)
+end
 
 local timePassed = os.clock() - startTimeStamp
 print("\nExecution took " .. timePassed .. " seconds")
