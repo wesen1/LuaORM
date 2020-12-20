@@ -198,7 +198,17 @@ function FieldValueRow:matches(_dataRow, _isQueryResult)
 
   local rawDataRowPrimaryKeyValue = _dataRow[primaryKeyColumnIndex]
   if (rawDataRowPrimaryKeyValue == nil) then
-    return primaryKeyFieldValue:isEmpty()
+
+    if (primaryKeyFieldValue:isEmpty()) then
+      if (_isQueryResult) then
+        return self:matchesExact(_dataRow, _isQueryResult)
+      else
+        return true
+      end
+    else
+      return false
+    end
+
   else
 
     local dataRowPrimaryKeyValue = primaryKeyColumn:getFieldType():convertValueToFieldType(rawDataRowPrimaryKeyValue)
@@ -211,6 +221,31 @@ function FieldValueRow:matches(_dataRow, _isQueryResult)
     end
 
   end
+
+end
+
+---
+-- Returns whether this FieldValueRow matches the contents of a data row exactly.
+-- This is done by checking if all values for the columns of the parent table match.
+--
+-- @tparam string[] _dataRow The data row
+-- @tparam bool _isQueryResult Defines whether the data row is a query result or user input
+--
+-- @treturn bool True if this FieldValueRow matches the data rows contents exactly, false otherwise
+--
+function FieldValueRow:matchesExact(_dataRow, _isQueryResult)
+
+  local fieldValues = self.dataParser:extractFieldValues(_dataRow, _isQueryResult)
+
+  local existingFieldValue
+  for _, fieldValue in ipairs(fieldValues) do
+    existingFieldValue = self:getFieldValueByColumn(fieldValue:getColumn())
+    if (existingFieldValue:getCurrentValue() ~= fieldValue:getCurrentValue()) then
+      return false
+    end
+  end
+
+  return true
 
 end
 

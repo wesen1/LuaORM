@@ -54,6 +54,19 @@ end
 -- @tparam bool _isQueryResult Defines whether the data row is a query result or user input
 --
 function FieldValueRowDataParser:parse(_dataRow, _isQueryResult)
+  self.parentFieldValueRow:setFieldValues(self:extractFieldValues(_dataRow, _isQueryResult))
+  self:markDataRowValuesAsParsed(_dataRow, _isQueryResult)
+end
+
+---
+-- Extracts and returns all field values for the columns of the parent table from a given data row.
+--
+-- @tparam string[] _dataRow The data row
+-- @tparam bool _isQueryResult Defines whether the data row is a query result or user input
+--
+-- @treturn FieldValue[] The extracted FieldValue's
+--
+function FieldValueRowDataParser:extractFieldValues(_dataRow, _isQueryResult)
 
   local fieldValues = {}
   for i, column in ipairs(self.parentFieldValueRow:getParentTable():getColumns()) do
@@ -71,8 +84,7 @@ function FieldValueRowDataParser:parse(_dataRow, _isQueryResult)
 
   end
 
-  self.parentFieldValueRow:setFieldValues(fieldValues)
-  self:markDataRowValuesAsParsed(_dataRow, _isQueryResult)
+  return fieldValues
 
 end
 
