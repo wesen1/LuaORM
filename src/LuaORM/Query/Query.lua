@@ -352,12 +352,48 @@ end
 --
 function Query:getAggregatedTableColumns()
 
-  local aggregatedTableColumns = {}
+  -- Find all TableColumn's that are used in the GroupBy clause
+  local explicitAggregatedTableColumns = {}
   for _, usedTableColumn in ipairs(self.clauses["groupBy"]:getUsedTableColumns()) do
-    if (not TableUtils.tableHasValue(aggregatedTableColumns, usedTableColumn)) then
-      table.insert(aggregatedTableColumns, usedTableColumn)
+    if (not TableUtils.tableHasValue(explicitAggregatedTableColumns, usedTableColumn)) then
+      table.insert(explicitAggregatedTableColumns, usedTableColumn)
     end
   end
+
+  -- Also add all TableColumn's of Table's whose primary key is one of the aggregated TableColumn's
+  local usedTables = self:getUsedTables()
+
+  local implicitAggregatedTables = {}
+  local function addImplictAggregatedTable(_table)
+    if (not TableUtils.tableHasValue(implicitAggregatedTables, _table)) then
+      table.insert(implicitAggregatedTables, _table)
+    end
+
+    for _, foreignKeyColumn in ipairs(_table:getForeignKeyColumns()) do
+      local foreignTable = foreignKeyColumn:getSettings()["isForeignKeyTo"]
+      if (TableUtils.tableHasValue(usedTables, foreignTable)) then
+        addImplictAggregatedTable(foreignTable)
+      end
+    end
+  end
+
+  for _, explicitAggregatedTableColumn in ipairs(explicitAggregatedTableColumns) do
+    if (explicitAggregatedTableColumn:getSettings()["isPrimaryKey"] == true) then
+      addImplictAggregatedTable(explicitAggregatedTableColumn:getParentTable())
+    elseif (explicitAggregatedTableColumn:getSettings()["isForeignKeyTo"] ~= nil) then
+      addImplictAggregatedTable(explicitAggregatedTableColumn:getSettings()["isForeignKeyTo"])
+    end
+  end
+
+  local aggregatedTableColumns = explicitAggregatedTableColumns
+  for _, implicitAggregatedTable in ipairs(implicitAggregatedTables) do
+    for _, tableColumn in ipairs(implicitAggregatedTable:getColumns()) do
+      if (not TableUtils.tableHasValue(aggregatedTableColumns, tableColumn)) then
+        table.insert(aggregatedTableColumns, tableColumn)
+      end
+    end
+  end
+
 
   return aggregatedTableColumns
 

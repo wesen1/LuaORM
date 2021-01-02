@@ -372,10 +372,11 @@ print("Found " .. users:count() .. " users")
 
 -- 6.1 selectOnlyAggregatedColumns
 
-print("Selecting only aggregated columns ...")
+print("\nSelecting only aggregated columns ...")
 local users = User:get()
                   :select():min("age")
-                  :groupByUserName()
+                  :innerJoinNews()
+                  :groupBy("news.id")
                   :selectOnlyAggregatedTableColumns(true)
                   :find()
 print("Found " .. users:count() .. " rows")

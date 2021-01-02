@@ -1,5 +1,5 @@
 package = "LuaORM"
-version = "1.2.1-1"
+version = "1.2.2-1"
 
 description = {
   summary = "An ORM for Lua",
@@ -13,7 +13,7 @@ description = {
 
 source = {
   url = "git+https://github.com/wesen1/LuaORM.git",
-  tag = "v1.2.1"
+  tag = "v1.2.2"
 }
 
 dependencies = {
