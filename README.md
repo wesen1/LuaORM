@@ -40,6 +40,12 @@ API.ORM:initialize({
 })
 ```
 
+You can then close the connection with `API.ORM:close()`
+
+```lua
+API.ORM:close()
+```
+
 #### connection ####
 
 | Option     | Description                          | Default Value | Example        |
