@@ -36,7 +36,7 @@ Model.targetTable = nil
 --
 -- @tparam mixed[] _tableConfiguration The table configuration of this Model's table
 --
--- @tparam table _modelOptions The options for this model.
+-- @tparam table _modelOptions The options for this model. (optional)
 --
 -- @treturn Model The Model instance
 --
@@ -44,6 +44,10 @@ function Model:__construct(_tableConfiguration, _modelOptions)
 
   local instance = setmetatable({}, {__index = Model})
   instance.targetTable = Table(_tableConfiguration)
+
+  if _modelOptions == nil then
+    _modelOptions = {}
+  end
 
   if _modelOptions.createTable == nil or _modelOptions.createTable ~= false then
     instance:createTable()
