@@ -100,7 +100,6 @@ local User = Model({
 
 ##### Table Configuration #####
 
-
 | Option  | Description              | Default Value |
 |---------|--------------------------|---------------|
 | name    | The name of the table    | -             |
