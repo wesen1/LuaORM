@@ -158,6 +158,16 @@ end
 function LuaSQLConnection:getConnection()
 end
 
+---
+--
+-- Closes the database connection
+--
+-- @treturn bool The result of closing the connection and environment. True for success, false for failure.
+--
+function LuaSQLConnection:close()
+  self.connection:close()
+  return self.environment:close()
+end
 
 setmetatable(
   LuaSQLConnection,

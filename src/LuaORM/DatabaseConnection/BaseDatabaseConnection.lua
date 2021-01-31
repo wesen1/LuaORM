@@ -201,6 +201,12 @@ end
 function BaseDatabaseConnection:parseQueryResult(_queryResult)
 end
 
+---
+-- Closes the connection to the database
+--
+function BaseDatabaseConnection:close()
+end
+
 
 -- When BaseDatabaseConnection() is called, call the __construct() method
 setmetatable(BaseDatabaseConnection, {__call = BaseDatabaseConnection.__construct})
