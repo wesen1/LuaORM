@@ -51,6 +51,8 @@ function Model:__construct(_tableConfiguration, _modelOptions)
 
   if _modelOptions.createTable == nil or _modelOptions.createTable ~= false then
     instance:createTable()
+  else
+    instance.targetTable:validate()
   end
 
   return instance
