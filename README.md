@@ -81,7 +81,9 @@ Available connection types are:
 
 After initializing the ORM you can start creating the models for your tables. <br />
 A table contains one or more table columns and must contain exactly one primary key column. <br />
-If no primary key column is defined, a "id" column will be automatically added to the table.
+If no primary key column is defined, a "id" column will be automatically added to the table.  <br />
+The first parameter of `Model()` are the Table Configuration settings. The second parameter are the Model Options settings.  <br />
+The second parameter is optional.
 
 ```lua
 local Model = API.Model
@@ -96,13 +98,24 @@ local User = Model({
     { name = "job", fieldType = fieldTypes.charField, maxLength = 50, mustBeSet = false },
     { name = "time_create", fieldType = fieldTypes.dateTimeField, mustBeSet = false }
   }
-})
+},
+    { createTable =  true }
+)
 ```
+
+
+##### Table Configuration #####
 
 | Option  | Description              | Default Value |
 |---------|--------------------------|---------------|
 | name    | The name of the table    | -             |
 | columns | The columns of the table | -             |
+
+##### Model Options #####
+
+| Option      | Description                                                  | Default Value |
+|-------------|--------------------------------------------------------------|---------------|
+| createTable | Creates the table in the database when calling `Model()`     | `true`        |
 
 
 #### Table columns ####
